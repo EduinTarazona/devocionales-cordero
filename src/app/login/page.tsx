@@ -15,19 +15,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-
-      {/* Panel izquierdo — imagen banner ocupa toda la altura */}
-      <div className="relative md:w-1/2 h-64 md:h-auto md:min-h-screen flex-shrink-0 overflow-hidden">
-        <img
-          src="/images.jpg"
-          alt="Centro Cristiano Misión Global"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        />
-      </div>
-
-      {/* Panel derecho — formulario con fondo blanco limpio */}
-      <div className="flex-1 flex flex-col items-center justify-center bg-white px-8 py-14">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-8 py-14">
+      <div className="flex-1 flex flex-col items-center justify-center w-full">
         <div className="w-full max-w-xs">
 
           {/* Logo */}
@@ -67,7 +56,6 @@ export default function LoginPage() {
           <p className="text-xs text-gray-300 text-center mt-6">Solo miembros registrados</p>
         </div>
       </div>
-
     </div>
   )
 }
