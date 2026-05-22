@@ -105,17 +105,16 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
             </div>
           )}
 
-          {/* Oración — integrada al flujo, no como sección aparte */}
+          {/* Oración — fluye como cierre natural del devocional */}
           {devocional.oracion && (
-            <div
-              className="rounded-2xl px-6 py-6 mb-10"
-              style={{ background: 'rgba(14,119,115,0.08)', borderLeft: '3px solid #0E7773' }}
-            >
-              <p className="text-xs font-bold tracking-widest uppercase text-primary mb-3">
-                🙏 Oremos juntos
-              </p>
+            <div className="mb-10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex-1 h-px bg-gray-300" />
+                <span className="text-base">🕊️</span>
+                <div className="flex-1 h-px bg-gray-300" />
+              </div>
               <p
-                className="text-[15px] text-gray-700 leading-[1.9] italic whitespace-pre-wrap"
+                className="text-[15px] text-gray-600 leading-[2] italic whitespace-pre-wrap"
                 style={{ fontFamily: 'Georgia, serif' }}
               >
                 {devocional.oracion}
