@@ -112,12 +112,11 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
 
       {/* Logo */}
       <div className="px-5 py-5 flex items-center gap-3 border-b border-white/10">
-        <div className="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center flex-shrink-0">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-            <path d="M12 3v18" />
-            <path d="M6 9h12" />
-          </svg>
-        </div>
+        <img
+          src="/images.png"
+          alt="Centro Cristiano"
+          className="w-10 h-10 rounded-full object-cover flex-shrink-0 bg-white p-0.5"
+        />
         <div className="min-w-0">
           <p className="font-semibold text-sm leading-tight">Centro Cristiano</p>
           <p className="text-xs text-white/60 leading-tight">Cordero · Devocionales</p>
