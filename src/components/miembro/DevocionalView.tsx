@@ -33,9 +33,20 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
       <div className="max-w-2xl mx-auto px-4 md:px-6 py-6 space-y-5">
 
         <div className="card space-y-1">
-          <span className="badge bg-primary-light text-primary">
-            {devocional.tipo === 'familiar' ? 'Familiar' : devocional.tipo === 'grupal' ? 'Grupal' : 'Empresarial'}
-          </span>
+          <div className="flex items-center justify-between">
+            <span className="badge bg-primary-light text-primary">
+              {devocional.tipo === 'familiar' ? 'Familiar' : devocional.tipo === 'grupal' ? 'Grupal' : 'Empresarial'}
+            </span>
+            <button
+              onClick={() => window.open('/devocional/pdf', '_blank')}
+              className="flex items-center gap-1.5 text-xs text-primary font-medium hover:underline"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              Exportar PDF
+            </button>
+          </div>
           <h1 className="text-xl font-bold text-gray-900 mt-2">{devocional.titulo}</h1>
           {devocional.pasaje && (
             <p className="text-sm font-medium text-primary italic">"{devocional.pasaje}"</p>
