@@ -17,43 +17,43 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
 
-      {/* Panel izquierdo — imagen banner */}
-      <div className="relative md:w-1/2 h-56 md:h-auto flex-shrink-0 overflow-hidden">
+      {/* Panel izquierdo — imagen banner ocupa toda la altura */}
+      <div className="relative md:w-1/2 h-64 md:h-auto md:min-h-screen flex-shrink-0 overflow-hidden">
         <img
           src="/images.jpg"
           alt="Centro Cristiano Misión Global"
-          className="w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-cover object-center"
         />
-        {/* Overlay suave */}
-        <div className="absolute inset-0 bg-primary/30" />
       </div>
 
-      {/* Panel derecho — formulario */}
-      <div className="flex-1 flex flex-col items-center justify-center bg-gray-50 px-6 py-12">
-        <div className="w-full max-w-sm">
+      {/* Panel derecho — formulario con fondo blanco limpio */}
+      <div className="flex-1 flex flex-col items-center justify-center bg-white px-8 py-14">
+        <div className="w-full max-w-xs">
 
           {/* Logo */}
-          <div className="flex flex-col items-center mb-8">
-            <img
-              src="/images.png"
-              alt="Logo Centro Cristiano"
-              className="w-20 h-20 rounded-full object-cover mb-4 shadow-md"
-            />
-            <h1 className="text-2xl font-extrabold text-gray-900 text-center leading-tight">
+          <div className="flex flex-col items-center mb-10">
+            <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg mb-5 ring-4 ring-primary/20">
+              <img
+                src="/images.png"
+                alt="Logo Centro Cristiano"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <h1 className="text-2xl font-extrabold text-gray-900 text-center leading-snug">
               Centro Cristiano<br />Cordero
             </h1>
-            <p className="text-xs text-primary font-semibold tracking-widest uppercase mt-1">
+            <p className="text-[11px] text-primary font-bold tracking-[0.2em] uppercase mt-2">
               Misión Global
             </p>
           </div>
 
-          <p className="text-sm text-gray-500 text-center mb-8">
+          <p className="text-sm text-gray-400 text-center mb-7 leading-relaxed">
             Ingresa con tu cuenta de Gmail para acceder a los devocionales
           </p>
 
           <button
             onClick={loginConGoogle}
-            className="w-full flex items-center justify-center gap-3 border border-gray-200 bg-white rounded-xl py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors shadow-sm"
+            className="w-full flex items-center justify-center gap-3 border border-gray-200 bg-white rounded-xl py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
           >
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -64,7 +64,7 @@ export default function LoginPage() {
             Continuar con Google
           </button>
 
-          <p className="text-xs text-gray-400 text-center mt-5">Solo miembros registrados</p>
+          <p className="text-xs text-gray-300 text-center mt-6">Solo miembros registrados</p>
         </div>
       </div>
 
