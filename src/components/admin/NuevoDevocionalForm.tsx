@@ -2,9 +2,22 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
+function semanaActual(): string {
+  const hoy = new Date()
+  const dia = hoy.getDay()
+  const diffLunes = (dia === 0 ? -6 : 1 - dia)
+  const lunes = new Date(hoy)
+  lunes.setDate(hoy.getDate() + diffLunes)
+  const domingo = new Date(lunes)
+  domingo.setDate(lunes.getDate() + 6)
+  const fmt = (d: Date) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
+  const anio = String(domingo.getFullYear()).slice(2)
+  return `${fmt(lunes)} al ${fmt(domingo)}/${anio}`
+}
+
 export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () => void }) {
   const [form, setForm] = useState({
-    semana: '', titulo: '', tipo: 'familiar', pasaje: '', referencia: '',
+    semana: semanaActual(), titulo: '', tipo: 'familiar', pasaje: '', referencia: '',
     contenido: '', oracion: '',
   })
   const [guardando, setGuardando] = useState(false)
@@ -59,7 +72,18 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
     <div className="card space-y-5">
       <h2 className="font-bold text-gray-900">Nuevo devocional</h2>
 
-      {campo('Semana (ej: 17/05 al 23/05/26)', 'semana', false, true)}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Semana <span className="text-red-400">*</span>
+        </label>
+        <input
+          type="text"
+          value={form.semana}
+          onChange={e => set('semana', e.target.value)}
+          className="input bg-primary/5 font-medium"
+        />
+        <p className="text-xs text-gray-400 mt-1">Calculada automáticamente. Puedes editarla si es necesario.</p>
+      </div>
       {campo('Titulo', 'titulo', false, true)}
 
       <div>
