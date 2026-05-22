@@ -36,12 +36,12 @@ create trigger on_auth_user_created
 -- 2. DEVOCIONALES
 create table public.devocionales (
   id          uuid primary key default gen_random_uuid(),
+  semana      text not null,
   titulo      text not null,
   tipo        text not null default 'familiar' check (tipo in ('familiar', 'grupal', 'empresarial')),
   pasaje      text,
   referencia  text,
   contenido   text not null,
-  dinamica    text,
   oracion     text,
   activo      boolean not null default false,
   created_by  uuid references public.perfiles(id),

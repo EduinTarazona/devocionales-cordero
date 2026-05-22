@@ -4,8 +4,8 @@ import { createClient } from '@/lib/supabase/client'
 
 export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () => void }) {
   const [form, setForm] = useState({
-    titulo: '', tipo: 'familiar', pasaje: '', referencia: '',
-    contenido: '', dinamica: '', oracion: '',
+    semana: '', titulo: '', tipo: 'familiar', pasaje: '', referencia: '',
+    contenido: '', oracion: '',
   })
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState('')
@@ -16,8 +16,8 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
   }
 
   async function publicar() {
-    if (!form.titulo.trim() || !form.contenido.trim()) {
-      setError('El titulo y el contenido son obligatorios.')
+    if (!form.semana.trim() || !form.titulo.trim() || !form.contenido.trim()) {
+      setError('La semana, el titulo y el contenido son obligatorios.')
       return
     }
     setGuardando(true)
@@ -59,6 +59,7 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
     <div className="card space-y-5">
       <h2 className="font-bold text-gray-900">Nuevo devocional</h2>
 
+      {campo('Semana (ej: 17/05 al 23/05/26)', 'semana', false, true)}
       {campo('Titulo', 'titulo', false, true)}
 
       <div>
@@ -73,7 +74,6 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
       {campo('Versiculo / Pasaje', 'pasaje')}
       {campo('Referencia biblica (ej: Mateo 18:19)', 'referencia')}
       {campo('Contenido / Desarrollo', 'contenido', true, true)}
-      {campo('Dinamica familiar', 'dinamica', true)}
       {campo('Oracion sugerida', 'oracion', true)}
 
       {error && <p className="text-sm text-red-500">{error}</p>}

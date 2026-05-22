@@ -76,5 +76,11 @@ create policy "reportes_select_own" on public.reportes for select
 
 
 -- ============================================================
+-- MIGRACION: campo semana en devocionales
+-- ============================================================
+alter table public.devocionales
+  add column if not exists semana text not null default '';
+
+-- ============================================================
 -- Fin
 -- ============================================================
