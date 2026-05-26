@@ -16,13 +16,8 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
       <div className="w-full max-w-md">
 
-        {/* Logo + nombre */}
+        {/* Nombre */}
         <div className="flex flex-col items-center mb-8">
-          <img
-            src="/Logo CasasVida_page-0001.jpg"
-            alt="Casas de Vida"
-            className="w-36 h-36 object-contain mb-5"
-          />
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
             Sistema <span style={{ color: '#F7941D' }}>Vida</span>
           </h1>
