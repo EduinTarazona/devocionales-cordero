@@ -193,7 +193,7 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
           {/* Asesoría pastoral */}
           <div
             className="rounded-3xl overflow-hidden shadow-sm"
-            style={{ background: 'linear-gradient(135deg, #0E7773 0%, #0a5553 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #3B3B8E 0%, #2A2A6B 100%)' }}
           >
             {/* Contenido */}
             <div className="px-6 pt-6 pb-5 text-white">
