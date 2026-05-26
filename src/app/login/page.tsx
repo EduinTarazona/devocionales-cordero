@@ -21,18 +21,13 @@ export default function LoginPage() {
 
           {/* Logo */}
           <div className="flex flex-col items-center mb-10">
-            <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg mb-5 ring-4 ring-primary/20">
-              <img
-                src="/images.png"
-                alt="Logo Centro Cristiano"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <h1 className="text-2xl font-extrabold text-gray-900 text-center leading-snug">
+            <img
+              src="/Logo CasasVida_page-0001.jpg"
+              alt="Casas de Vida"
+              className="w-56 h-auto object-contain mb-4"
+            />
+            <p className="text-[11px] text-primary font-bold tracking-[0.2em] uppercase">
               Sistema Vida
-            </h1>
-            <p className="text-[11px] text-primary font-bold tracking-[0.2em] uppercase mt-2">
-              Casas de Vida
             </p>
           </div>
 

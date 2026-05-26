@@ -4,10 +4,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Identidad Centro Cristiano Cordero — teal/petrol oscuro
-        primary: { DEFAULT: '#0E7773', light: '#DEF1EF', dark: '#08504D' },
-        // Acento verde menta para resaltar ofrendas, reportes positivos
-        teal:    { DEFAULT: '#10B981', light: '#D1FAE5', dark: '#065F46' },
+        // Identidad Casas de Vida — azul índigo + naranja
+        primary: { DEFAULT: '#3B3B8E', light: '#EBEBF8', dark: '#2A2A6B' },
+        // Acento naranja para destacar ofrendas, reportes positivos
+        teal:    { DEFAULT: '#F7941D', light: '#FEF3E2', dark: '#C4700A' },
+        orange:  { DEFAULT: '#F7941D', light: '#FEF3E2' },
       },
       fontFamily: { sans: ['Inter', 'Arial', 'sans-serif'] },
     },

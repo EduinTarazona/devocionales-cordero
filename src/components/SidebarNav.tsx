@@ -111,16 +111,13 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
     <div className="flex flex-col h-full bg-primary text-white w-full">
 
       {/* Logo */}
-      <div className="px-5 py-5 flex items-center gap-3 border-b border-white/10">
+      <div className="px-4 py-4 border-b border-white/10">
         <img
-          src="/images.png"
-          alt="Centro Cristiano"
-          className="w-10 h-10 rounded-full object-cover flex-shrink-0 bg-white p-0.5"
+          src="/Logo CasasVida_page-0001.jpg"
+          alt="Casas de Vida"
+          className="w-full h-auto object-contain rounded-xl bg-white p-2"
+          style={{ maxHeight: 80 }}
         />
-        <div className="min-w-0">
-          <p className="font-semibold text-sm leading-tight">Sistema Vida</p>
-          <p className="text-xs text-white/60 leading-tight">Casas de Vida</p>
-        </div>
       </div>
 
       {/* Nav */}
