@@ -111,15 +111,27 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
     <div className="flex flex-col h-full bg-primary text-white w-full">
 
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-white/10 flex flex-col items-center gap-2">
-        <img
-          src="/Logo CasasVida_page-0001.jpg"
-          alt="Casas de Vida"
-          className="w-28 h-auto object-contain rounded-lg"
-        />
-        <div className="text-center">
-          <p className="text-white font-bold text-sm tracking-wide">Sistema Vida</p>
-          <p className="text-white/50 text-[11px] tracking-widest uppercase">Devocionales</p>
+      <div className="px-5 py-5 border-b border-white/10">
+        <div className="flex items-center gap-3">
+          {/* Ícono casa con acento naranja */}
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: 'rgba(247,148,29,0.15)' }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9.5z"
+                fill="#F7941D" opacity="0.9"/>
+              <path d="M9 21v-6h6v6" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
+              <rect x="10.5" y="7" width="3" height="3" rx="0.5" fill="#fff" opacity="0.8"/>
+            </svg>
+          </div>
+          {/* Texto */}
+          <div>
+            <p className="font-extrabold text-white text-base leading-tight tracking-tight">
+              Sistema <span style={{ color: '#F7941D' }}>Vida</span>
+            </p>
+            <p className="text-white/45 text-[11px] leading-tight mt-0.5 tracking-wide">
+              Casas de Vida
+            </p>
+          </div>
         </div>
       </div>
 
