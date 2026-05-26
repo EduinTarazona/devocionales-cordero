@@ -44,7 +44,7 @@ export async function GET() {
       margin-bottom: 32px;
     }
     .btn-print {
-      background: #0E7773; color: #fff; border: none;
+      background: linear-gradient(90deg, #3B3B8E, #F7941D); color: #fff; border: none;
       padding: 10px 22px; border-radius: 8px; font-weight: 700;
       font-size: 14px; cursor: pointer; font-family: 'Inter', sans-serif;
     }
@@ -57,15 +57,15 @@ export async function GET() {
     /* HEADER */
     .header {
       display: flex; justify-content: space-between; align-items: flex-end;
-      border-bottom: 2px solid #0E7773; padding-bottom: 14px; margin-bottom: 28px;
+      border-bottom: 2px solid #3B3B8E; padding-bottom: 14px; margin-bottom: 28px;
     }
     .logo { line-height: 1.1; }
-    .logo .casas { font-size: 20px; font-weight: 800; color: #0E7773; }
+    .logo .casas { font-size: 20px; font-weight: 800; color: #3B3B8E; }
     .logo .de { font-size: 9px; color: #888; letter-spacing: 1px; text-transform: uppercase; display: block; }
-    .logo .vida { font-size: 24px; font-weight: 900; color: #0E7773; letter-spacing: 3px; display: block; }
+    .logo .vida { font-size: 24px; font-weight: 900; color: #F7941D; letter-spacing: 3px; display: block; }
     .header-right { text-align: right; }
     .semana { font-size: 12px; font-weight: 700; color: #333; }
-    .tipo-label { font-size: 13px; font-weight: 700; color: #0E7773; font-style: italic; }
+    .tipo-label { font-size: 13px; font-weight: 700; color: #F7941D; font-style: italic; }
 
     /* TÍTULO */
     h1 {
@@ -81,13 +81,13 @@ export async function GET() {
     blockquote {
       margin: 20px 0 28px;
       padding: 0 0 0 18px;
-      border-left: 3px solid #0E7773;
+      border-left: 3px solid #3B3B8E;
       position: relative;
     }
     .quote-mark {
       font-family: 'Lora', Georgia, serif;
       font-size: 72px; line-height: 0.8;
-      color: rgba(14,119,115,0.15);
+      color: rgba(59,59,142,0.12);
       position: absolute; top: -4px; left: -8px;
       pointer-events: none; select: none;
     }
@@ -99,7 +99,7 @@ export async function GET() {
     blockquote footer {
       font-family: 'Inter', sans-serif;
       font-size: 12px; font-weight: 700;
-      color: #0E7773; margin-top: 10px; letter-spacing: 0.5px;
+      color: #3B3B8E; margin-top: 10px; letter-spacing: 0.5px;
     }
 
     /* DIVISOR */
@@ -108,7 +108,7 @@ export async function GET() {
       margin: 24px 0;
     }
     .divider-line { flex: 1; height: 1px; background: #ccc; }
-    .divider-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(14,119,115,0.4); }
+    .divider-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(59,59,142,0.35); }
 
     /* CONTENIDO */
     .contenido {
