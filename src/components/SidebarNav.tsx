@@ -108,17 +108,16 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
   }
 
   return (
-    <div className="flex flex-col h-full bg-primary text-white w-full">
+    <div className="flex flex-col h-full w-full bg-white border-r border-gray-100">
 
-      {/* Logo — franja blanca */}
-      <div className="bg-white px-5 py-4 flex flex-col items-center">
+      {/* Logo */}
+      <div className="px-5 py-5 border-b border-gray-100">
         <img
           src="/logo-casasvida.png.png"
           alt="Casas de Vida"
-          className="w-36 h-auto object-contain"
+          className="w-32 h-auto object-contain"
         />
-        <div className="w-full h-px mt-3" style={{ background: 'linear-gradient(90deg, transparent, #3B3B8E40, transparent)' }} />
-        <p className="text-[11px] font-bold tracking-widest uppercase mt-2" style={{ color: '#3B3B8E' }}>
+        <p className="text-[10px] font-bold tracking-widest uppercase mt-1.5" style={{ color: '#3B3B8E' }}>
           Sistema Vida
         </p>
       </div>
@@ -132,10 +131,11 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
               key={item.href + item.label}
               href={item.href}
               onClick={() => onNavigate?.()}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors
                           ${activo
-                            ? 'bg-white text-primary font-semibold shadow-sm'
-                            : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
+                            ? 'text-white font-semibold shadow-sm'
+                            : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'}`}
+              style={activo ? { background: 'linear-gradient(90deg, #3B3B8E, #F7941D)' } : {}}
             >
               <span className="flex-shrink-0">{item.icon}</span>
               <span className="truncate">{item.label}</span>
@@ -145,19 +145,20 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
       </nav>
 
       {/* Usuario + logout */}
-      <div className="border-t border-white/10 p-3 space-y-2">
+      <div className="border-t border-gray-100 p-3 space-y-2">
         <div className="flex items-center gap-3 px-2 py-2">
-          <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center font-semibold text-sm flex-shrink-0">
+          <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 text-white"
+            style={{ background: 'linear-gradient(135deg, #3B3B8E, #F7941D)' }}>
             {iniciales(user.nombre, user.email)}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium truncate">{user.nombre ?? user.email}</p>
-            <p className="text-xs text-white/60">{displayRol(rol)}</p>
+            <p className="text-sm font-semibold text-gray-800 truncate">{user.nombre ?? user.email}</p>
+            <p className="text-xs text-gray-400">{displayRol(rol)}</p>
           </div>
         </div>
         <button
           onClick={cerrarSesion}
-          className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm text-white transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-gray-200 text-sm text-gray-500 hover:bg-gray-50 transition-colors"
         >
           {iconLogout}
           Cerrar sesion
