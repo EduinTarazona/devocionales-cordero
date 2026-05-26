@@ -15,31 +15,31 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4"
-      style={{ background: 'linear-gradient(160deg, #2A2A6B 0%, #3B3B8E 50%, #F7941D 150%)' }}
-    >
-      {/* Card central */}
-      <div className="w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <div className="min-h-screen flex flex-col" style={{ background: '#F0F0FA' }}>
 
-        {/* Header de la card con fondo índigo */}
-        <div className="px-8 pt-10 pb-8 flex flex-col items-center"
-          style={{ background: 'linear-gradient(160deg, #2A2A6B, #3B3B8E)' }}
-        >
+      {/* Franja superior con color */}
+      <div className="h-56 flex flex-col items-center justify-end pb-16"
+        style={{ background: 'linear-gradient(160deg, #2A2A6B, #3B3B8E)' }}
+      />
+
+      {/* Contenido centrado sobre la franja */}
+      <div className="flex flex-col items-center px-4 -mt-24 pb-12">
+
+        {/* Logo flotando entre franja y card */}
+        <div className="w-40 h-40 rounded-3xl bg-white shadow-xl flex items-center justify-center mb-6 p-3">
           <img
             src="/Logo CasasVida_page-0001.jpg"
             alt="Casas de Vida"
-            className="w-44 h-auto object-contain rounded-2xl"
+            className="w-full h-auto object-contain"
           />
         </div>
 
-        {/* Cuerpo blanco */}
-        <div className="px-8 py-8">
-          <div className="text-center mb-7">
-            <h1 className="text-xl font-extrabold text-gray-900">Sistema Vida</h1>
-            <p className="text-xs text-gray-400 mt-2 leading-relaxed">
-              Ingresa con tu cuenta de Gmail para acceder a los devocionales
-            </p>
-          </div>
+        {/* Card */}
+        <div className="w-full max-w-sm bg-white rounded-3xl shadow-lg px-8 py-8 text-center">
+          <h1 className="text-xl font-extrabold text-gray-900">Sistema Vida</h1>
+          <p className="text-xs text-gray-400 mt-2 mb-8 leading-relaxed">
+            Ingresa con tu cuenta de Gmail para acceder a los devocionales
+          </p>
 
           <button
             onClick={loginConGoogle}
