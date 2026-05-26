@@ -2,10 +2,10 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Devocionales Cordero',
-  description: 'Sistema de devocionales familiares — Iglesia Cordero',
+  title: 'Sistema Vida',
+  description: 'Sistema de devocionales — Casas de Vida',
   manifest: '/manifest.json',
-  appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Devocionales' },
+  appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Sistema Vida' },
 }
 
 export const viewport: Viewport = {

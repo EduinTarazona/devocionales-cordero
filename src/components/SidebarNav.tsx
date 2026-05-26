@@ -118,8 +118,8 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
           className="w-10 h-10 rounded-full object-cover flex-shrink-0 bg-white p-0.5"
         />
         <div className="min-w-0">
-          <p className="font-semibold text-sm leading-tight">Centro Cristiano</p>
-          <p className="text-xs text-white/60 leading-tight">Cordero · Devocionales</p>
+          <p className="font-semibold text-sm leading-tight">Sistema Vida</p>
+          <p className="text-xs text-white/60 leading-tight">Casas de Vida</p>
         </div>
       </div>
 

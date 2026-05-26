@@ -29,10 +29,10 @@ export default function LoginPage() {
               />
             </div>
             <h1 className="text-2xl font-extrabold text-gray-900 text-center leading-snug">
-              Centro Cristiano<br />Cordero
+              Sistema Vida
             </h1>
             <p className="text-[11px] text-primary font-bold tracking-[0.2em] uppercase mt-2">
-              Misión Global
+              Casas de Vida
             </p>
           </div>
 
