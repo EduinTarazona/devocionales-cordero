@@ -1,12 +1,13 @@
 'use client'
 import NuevoDevocionalForm from './NuevoDevocionalForm'
+import EditarDevocionalForm from './EditarDevocionalForm'
 import ReportesLista from './ReportesLista'
 import UsuariosLista from './UsuariosLista'
 import AppShell from '../AppShell'
 import { displayRol } from '@/lib/roles'
 
 type MiembroPendiente = { id: string; nombre: string | null; email: string | null }
-type Vista = 'resumen' | 'nuevo' | 'reportes' | 'usuarios'
+type Vista = 'resumen' | 'nuevo' | 'editar' | 'reportes' | 'usuarios'
 
 type Props = {
   user: { id: string; nombre?: string; email: string }
@@ -22,6 +23,7 @@ type Props = {
 const TITULO_VISTA: Record<Vista, string> = {
   resumen: 'Resumen',
   nuevo: 'Publicar devocional',
+  editar: 'Editar devocional',
   reportes: 'Reportes',
   usuarios: 'Usuarios',
 }
@@ -110,10 +112,29 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
             )}
 
             {devocionalActivo ? (
-              <div className="card space-y-1">
-                <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Devocional activo</p>
-                <p className="font-semibold text-gray-900">{devocionalActivo.titulo}</p>
-                <p className="text-sm text-gray-500 italic">{devocionalActivo.pasaje}</p>
+              <div className="card space-y-2">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">Devocional activo</p>
+                    <p className="font-semibold text-gray-900">{devocionalActivo.titulo}</p>
+                    {devocionalActivo.semana && (
+                      <p className="text-xs text-gray-400 mt-0.5">Semana {devocionalActivo.semana}</p>
+                    )}
+                    {devocionalActivo.pasaje && (
+                      <p className="text-sm text-gray-500 italic mt-1 line-clamp-2">{devocionalActivo.pasaje}</p>
+                    )}
+                  </div>
+                  <a
+                    href="/admin?vista=editar"
+                    className="flex-shrink-0 flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary-light px-3 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-colors"
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    Editar
+                  </a>
+                </div>
               </div>
             ) : (
               <div className="card border-dashed border-gray-300 text-center space-y-2">
@@ -149,6 +170,18 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
         )}
 
         {vista === 'nuevo' && <NuevoDevocionalForm onPublicado={() => window.location.assign('/admin')} />}
+        {vista === 'editar' && devocionalActivo && (
+          <EditarDevocionalForm
+            devocional={devocionalActivo}
+            onGuardado={() => window.location.assign('/admin')}
+          />
+        )}
+        {vista === 'editar' && !devocionalActivo && (
+          <div className="card text-center space-y-3">
+            <p className="text-gray-500 text-sm">No hay devocional activo para editar.</p>
+            <a href="/admin?vista=nuevo" className="btn-primary text-sm px-4 py-2 inline-block">Publicar uno nuevo</a>
+          </div>
+        )}
         {vista === 'reportes' && <ReportesLista reportes={reportesSemana} totalMiembros={totalMiembros} />}
         {vista === 'usuarios' && <UsuariosLista currentUserId={user.id} />}
 

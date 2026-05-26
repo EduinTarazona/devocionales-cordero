@@ -5,8 +5,8 @@ import { getMyRole } from '@/lib/auth/role'
 
 export default async function AdminPage({ searchParams }: { searchParams: { vista?: string } }) {
   const vistaParam = searchParams?.vista
-  const vista: 'resumen' | 'nuevo' | 'reportes' | 'usuarios' =
-    vistaParam === 'nuevo' || vistaParam === 'reportes' || vistaParam === 'usuarios' ? vistaParam : 'resumen'
+  const vista: 'resumen' | 'nuevo' | 'editar' | 'reportes' | 'usuarios' =
+    vistaParam === 'nuevo' || vistaParam === 'editar' || vistaParam === 'reportes' || vistaParam === 'usuarios' ? vistaParam : 'resumen'
 
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
