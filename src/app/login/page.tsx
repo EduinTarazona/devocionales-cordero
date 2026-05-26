@@ -15,25 +15,31 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-8 py-14">
-      <div className="flex-1 flex flex-col items-center justify-center w-full">
-        <div className="w-full max-w-xs">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4"
+      style={{ background: 'linear-gradient(160deg, #2A2A6B 0%, #3B3B8E 50%, #F7941D 150%)' }}
+    >
+      {/* Card central */}
+      <div className="w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden">
 
-          {/* Logo */}
-          <div className="flex flex-col items-center mb-10">
-            <img
-              src="/Logo CasasVida_page-0001.jpg"
-              alt="Casas de Vida"
-              className="w-56 h-auto object-contain mb-4"
-            />
-            <p className="text-[11px] text-primary font-bold tracking-[0.2em] uppercase">
-              Sistema Vida
+        {/* Header de la card con fondo índigo */}
+        <div className="px-8 pt-10 pb-8 flex flex-col items-center"
+          style={{ background: 'linear-gradient(160deg, #2A2A6B, #3B3B8E)' }}
+        >
+          <img
+            src="/Logo CasasVida_page-0001.jpg"
+            alt="Casas de Vida"
+            className="w-44 h-auto object-contain rounded-2xl"
+          />
+        </div>
+
+        {/* Cuerpo blanco */}
+        <div className="px-8 py-8">
+          <div className="text-center mb-7">
+            <h1 className="text-xl font-extrabold text-gray-900">Sistema Vida</h1>
+            <p className="text-xs text-gray-400 mt-2 leading-relaxed">
+              Ingresa con tu cuenta de Gmail para acceder a los devocionales
             </p>
           </div>
-
-          <p className="text-sm text-gray-400 text-center mb-7 leading-relaxed">
-            Ingresa con tu cuenta de Gmail para acceder a los devocionales
-          </p>
 
           <button
             onClick={loginConGoogle}
@@ -48,7 +54,7 @@ export default function LoginPage() {
             Continuar con Google
           </button>
 
-          <p className="text-xs text-gray-300 text-center mt-6">Solo miembros registrados</p>
+          <p className="text-xs text-gray-300 text-center mt-5">Solo miembros registrados</p>
         </div>
       </div>
     </div>
