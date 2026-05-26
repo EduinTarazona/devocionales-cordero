@@ -15,34 +15,30 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#F0F0FA' }}>
+    <div className="min-h-screen flex flex-col items-center justify-center px-4"
+      style={{ background: 'linear-gradient(160deg, #2A2A6B 0%, #3B3B8E 50%, #F7941D 150%)' }}
+    >
+      <div className="w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden">
 
-      {/* Franja superior con color */}
-      <div className="h-56 flex flex-col items-center justify-end pb-16"
-        style={{ background: 'linear-gradient(160deg, #2A2A6B, #3B3B8E)' }}
-      />
+        {/* Header azul con logo */}
+        <div className="px-8 pt-10 pb-8 flex flex-col items-center"
+          style={{ background: 'linear-gradient(160deg, #2A2A6B, #3B3B8E)' }}
+        >
+          <img
+            src="/Logo CasasVida_page-0001.jpg"
+            alt="Casas de Vida"
+            className="w-44 h-auto object-contain rounded-2xl"
+          />
+        </div>
 
-      {/* Contenido centrado sobre la franja */}
-      <div className="flex flex-col items-center px-4 -mt-16 pb-12">
-
-        {/* Card con logo sobresaliendo arriba */}
-        <div className="w-full max-w-sm bg-white rounded-3xl shadow-lg px-8 pb-8 text-center">
-
-          {/* Logo pegado al borde superior de la card */}
-          <div className="flex justify-center -mt-14 mb-5">
-            <div className="w-28 h-28 rounded-2xl bg-white shadow-lg flex items-center justify-center p-2.5 border border-gray-100">
-              <img
-                src="/Logo CasasVida_page-0001.jpg"
-                alt="Casas de Vida"
-                className="w-full h-auto object-contain"
-              />
-            </div>
+        {/* Cuerpo blanco */}
+        <div className="px-8 py-8">
+          <div className="text-center mb-7">
+            <h1 className="text-xl font-extrabold text-gray-900">Sistema Vida</h1>
+            <p className="text-xs text-gray-400 mt-2 leading-relaxed">
+              Ingresa con tu cuenta de Gmail para acceder a los devocionales
+            </p>
           </div>
-
-          <h1 className="text-xl font-extrabold text-gray-900">Sistema Vida</h1>
-          <p className="text-xs text-gray-400 mt-2 mb-8 leading-relaxed">
-            Ingresa con tu cuenta de Gmail para acceder a los devocionales
-          </p>
 
           <button
             onClick={loginConGoogle}
