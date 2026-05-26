@@ -16,12 +16,16 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
       <div className="w-full max-w-md">
 
-        {/* Nombre */}
+        {/* Logo + nombre */}
         <div className="flex flex-col items-center mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+          <img
+            src="/logo-casasvida.png.png"
+            alt="Casas de Vida"
+            className="w-48 h-auto object-contain mb-4"
+          />
+          <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
             Sistema <span style={{ color: '#F7941D' }}>Vida</span>
           </h1>
-          <p className="text-sm text-gray-400 mt-1 tracking-wide">Casas de Vida · Mi lugar para crecer</p>
         </div>
 
         {/* Card */}
