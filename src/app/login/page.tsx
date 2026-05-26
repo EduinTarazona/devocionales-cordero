@@ -23,19 +23,22 @@ export default function LoginPage() {
       />
 
       {/* Contenido centrado sobre la franja */}
-      <div className="flex flex-col items-center px-4 -mt-24 pb-12">
+      <div className="flex flex-col items-center px-4 -mt-16 pb-12">
 
-        {/* Logo flotando entre franja y card */}
-        <div className="w-40 h-40 rounded-3xl bg-white shadow-xl flex items-center justify-center mb-6 p-3">
-          <img
-            src="/Logo CasasVida_page-0001.jpg"
-            alt="Casas de Vida"
-            className="w-full h-auto object-contain"
-          />
-        </div>
+        {/* Card con logo sobresaliendo arriba */}
+        <div className="w-full max-w-sm bg-white rounded-3xl shadow-lg px-8 pb-8 text-center">
 
-        {/* Card */}
-        <div className="w-full max-w-sm bg-white rounded-3xl shadow-lg px-8 py-8 text-center">
+          {/* Logo pegado al borde superior de la card */}
+          <div className="flex justify-center -mt-14 mb-5">
+            <div className="w-28 h-28 rounded-2xl bg-white shadow-lg flex items-center justify-center p-2.5 border border-gray-100">
+              <img
+                src="/Logo CasasVida_page-0001.jpg"
+                alt="Casas de Vida"
+                className="w-full h-auto object-contain"
+              />
+            </div>
+          </div>
+
           <h1 className="text-xl font-extrabold text-gray-900">Sistema Vida</h1>
           <p className="text-xs text-gray-400 mt-2 mb-8 leading-relaxed">
             Ingresa con tu cuenta de Gmail para acceder a los devocionales
@@ -59,4 +62,5 @@ export default function LoginPage() {
       </div>
     </div>
   )
+
 }
