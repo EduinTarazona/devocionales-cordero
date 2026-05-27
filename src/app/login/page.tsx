@@ -16,16 +16,30 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
       <div className="w-full max-w-md">
 
-        {/* Logo + nombre */}
+        {/* Ícono + nombre */}
         <div className="flex flex-col items-center mb-8">
-          <img
-            src="/logo-casasvida.png.png"
-            alt="Casas de Vida"
-            className="w-48 h-auto object-contain mb-4"
-          />
-          <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+          {/* Casita con óvalo verde */}
+          <div className="mb-4">
+            <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Óvalo verde */}
+              <ellipse cx="36" cy="36" rx="31" ry="31" stroke="#5BBF4E" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+              {/* Casa - techo */}
+              <path d="M22 35 L36 20 L50 35" fill="#3B3B8E"/>
+              {/* Casa - cuerpo */}
+              <rect x="25" y="35" width="22" height="16" rx="1" fill="#3B3B8E"/>
+              {/* Puerta */}
+              <rect x="32" y="42" width="8" height="9" rx="1" fill="white" fillOpacity="0.9"/>
+              {/* Ventana izquierda */}
+              <rect x="27" y="38" width="5" height="4" rx="0.5" fill="white" fillOpacity="0.7"/>
+              {/* Chimenea */}
+              <rect x="41" y="25" width="4" height="7" rx="0.5" fill="#3B3B8E"/>
+            </svg>
+          </div>
+          {/* Nombre */}
+          <h1 className="text-2xl font-extrabold tracking-tight" style={{ color: '#3B3B8E' }}>
             Sistema <span style={{ color: '#F7941D' }}>Vida</span>
           </h1>
+          <p className="text-[11px] text-gray-400 tracking-widest uppercase mt-1">Casas de Vida</p>
         </div>
 
         {/* Card */}
