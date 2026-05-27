@@ -20,20 +20,19 @@ export default function LoginPage() {
         <div className="flex flex-col items-center mb-8">
           {/* Letra C naranja con casita navy */}
           <div className="mb-4">
-            <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* C naranja gruesa */}
-              <path
-                d="M62 22 C55 10 41 4 28 8 C15 12 7 24 7 36 C7 48 15 60 28 64 C41 68 55 62 62 50"
-                stroke="#F7941D" strokeWidth="10" strokeLinecap="round" fill="none"
-              />
-              {/* Casa - techo */}
-              <path d="M24 37 L36 24 L48 37" fill="#3B3B8E"/>
-              {/* Casa - cuerpo */}
-              <rect x="27" y="37" width="18" height="14" rx="1" fill="#3B3B8E"/>
-              {/* Puerta */}
-              <rect x="33" y="43" width="6" height="8" rx="0.8" fill="white" fillOpacity="0.95"/>
-              {/* Ventana */}
-              <rect x="28.5" y="39" width="5" height="4" rx="0.5" fill="white" fillOpacity="0.7"/>
+            <svg width="76" height="76" viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* C naranja — arco desde arriba-derecha hasta abajo-derecha, abierta a la derecha */}
+              <path d="M 59 17 A 30 30 0 1 0 59 59" stroke="#F7941D" strokeWidth="10" strokeLinecap="round" fill="none"/>
+              {/* Chimenea (antes del techo para que quede detrás) */}
+              <rect x="44" y="25" width="5" height="11" rx="1" fill="#3B3B8E"/>
+              {/* Techo */}
+              <polygon points="24,38 38,22 52,38" fill="#3B3B8E"/>
+              {/* Cuerpo */}
+              <rect x="27" y="38" width="22" height="16" rx="1" fill="#3B3B8E"/>
+              {/* Ventana izquierda */}
+              <rect x="29" y="40" width="6" height="5" rx="0.5" fill="white" fillOpacity="0.85"/>
+              {/* Puerta central */}
+              <rect x="35" y="44" width="7" height="10" rx="1" fill="white" fillOpacity="0.95"/>
             </svg>
           </div>
           {/* Nombre */}
