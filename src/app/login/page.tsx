@@ -18,22 +18,22 @@ export default function LoginPage() {
 
         {/* Ícono + nombre */}
         <div className="flex flex-col items-center mb-8">
-          {/* Letra C con casita */}
+          {/* Letra C naranja con casita navy */}
           <div className="mb-4">
-            <svg width="74" height="74" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* Letra C — arco abierto a la derecha */}
+            <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* C naranja gruesa */}
               <path
-                d="M58 18 C50 8 36 5 24 11 C12 17 6 30 6 37 C6 44 12 57 24 63 C36 69 50 66 58 56"
-                stroke="#5BBF4E" strokeWidth="6" strokeLinecap="round" fill="none"
+                d="M62 22 C55 10 41 4 28 8 C15 12 7 24 7 36 C7 48 15 60 28 64 C41 68 55 62 62 50"
+                stroke="#F7941D" strokeWidth="10" strokeLinecap="round" fill="none"
               />
               {/* Casa - techo */}
-              <path d="M25 38 L37 24 L49 38" fill="#3B3B8E"/>
+              <path d="M24 37 L36 24 L48 37" fill="#3B3B8E"/>
               {/* Casa - cuerpo */}
-              <rect x="28" y="38" width="18" height="14" rx="1" fill="#3B3B8E"/>
+              <rect x="27" y="37" width="18" height="14" rx="1" fill="#3B3B8E"/>
               {/* Puerta */}
-              <rect x="34" y="44" width="6" height="8" rx="0.8" fill="white" fillOpacity="0.9"/>
+              <rect x="33" y="43" width="6" height="8" rx="0.8" fill="white" fillOpacity="0.95"/>
               {/* Ventana */}
-              <rect x="29.5" y="40" width="5" height="4" rx="0.5" fill="white" fillOpacity="0.7"/>
+              <rect x="28.5" y="39" width="5" height="4" rx="0.5" fill="white" fillOpacity="0.7"/>
             </svg>
           </div>
           {/* Nombre */}
