@@ -18,21 +18,22 @@ export default function LoginPage() {
 
         {/* Ícono + nombre */}
         <div className="flex flex-col items-center mb-8">
-          {/* Casita con óvalo verde */}
+          {/* Letra C con casita */}
           <div className="mb-4">
-            <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* Óvalo verde */}
-              <ellipse cx="36" cy="36" rx="31" ry="31" stroke="#5BBF4E" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+            <svg width="74" height="74" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Letra C — arco abierto a la derecha */}
+              <path
+                d="M58 18 C50 8 36 5 24 11 C12 17 6 30 6 37 C6 44 12 57 24 63 C36 69 50 66 58 56"
+                stroke="#5BBF4E" strokeWidth="6" strokeLinecap="round" fill="none"
+              />
               {/* Casa - techo */}
-              <path d="M22 35 L36 20 L50 35" fill="#3B3B8E"/>
+              <path d="M25 38 L37 24 L49 38" fill="#3B3B8E"/>
               {/* Casa - cuerpo */}
-              <rect x="25" y="35" width="22" height="16" rx="1" fill="#3B3B8E"/>
+              <rect x="28" y="38" width="18" height="14" rx="1" fill="#3B3B8E"/>
               {/* Puerta */}
-              <rect x="32" y="42" width="8" height="9" rx="1" fill="white" fillOpacity="0.9"/>
-              {/* Ventana izquierda */}
-              <rect x="27" y="38" width="5" height="4" rx="0.5" fill="white" fillOpacity="0.7"/>
-              {/* Chimenea */}
-              <rect x="41" y="25" width="4" height="7" rx="0.5" fill="#3B3B8E"/>
+              <rect x="34" y="44" width="6" height="8" rx="0.8" fill="white" fillOpacity="0.9"/>
+              {/* Ventana */}
+              <rect x="29.5" y="40" width="5" height="4" rx="0.5" fill="white" fillOpacity="0.7"/>
             </svg>
           </div>
           {/* Nombre */}
