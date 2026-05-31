@@ -8,7 +8,15 @@ export default async function Home() {
 
   if (!user) redirect('/login')
 
-  const rol = await getMyRole(supabase, user.id)
+  const { data: perfil } = await supabase
+    .from('perfiles')
+    .select('perfil_completo, rol')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  if (!perfil?.perfil_completo) redirect('/registro')
+
+  const rol = perfil?.rol ?? 'miembro'
   if (rol === 'admin' || rol === 'pastor') redirect('/admin')
   redirect('/devocional')
 }
