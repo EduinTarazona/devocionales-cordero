@@ -1,6 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { getMyRole } from '@/lib/auth/role'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,8 +18,18 @@ export async function GET(request: NextRequest) {
       if (next === '/') {
         const { data: { user } } = await supabase.auth.getUser()
         if (user) {
-          const rol = await getMyRole(supabase, user.id)
-          target = rol === 'admin' || rol === 'pastor' ? '/admin' : '/devocional'
+          const { data: perfil } = await supabase
+            .from('perfiles')
+            .select('perfil_completo, rol')
+            .eq('id', user.id)
+            .maybeSingle()
+
+          if (!perfil?.perfil_completo) {
+            target = '/registro'
+          } else {
+            const rol = perfil?.rol ?? 'miembro'
+            target = rol === 'admin' || rol === 'pastor' ? '/admin' : '/devocional'
+          }
         }
       }
 
