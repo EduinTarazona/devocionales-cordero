@@ -25,24 +25,40 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
 
   const { pathname } = request.nextUrl
   const protectedRoutes = ['/devocional', '/admin', '/reporte', '/historial', '/registro']
   const isProtected = protectedRoutes.some((r) => pathname.startsWith(r))
 
+  // Sin sesión → al login
   if (isProtected && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
+  // Con sesión en login → redirige al inicio
   if (pathname === '/login' && user) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
     return NextResponse.redirect(url)
+  }
+
+  // Con sesión activa en rutas protegidas (excepto /registro):
+  // si el perfil no está completo → forzar /registro
+  if (user && isProtected && !pathname.startsWith('/registro')) {
+    const { data: perfil } = await supabase
+      .from('perfiles')
+      .select('perfil_completo')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    if (!perfil?.perfil_completo) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/registro'
+      return NextResponse.redirect(url)
+    }
   }
 
   return supabaseResponse
