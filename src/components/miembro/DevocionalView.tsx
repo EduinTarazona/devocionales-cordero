@@ -133,7 +133,7 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
           </div>
 
           {/* A) Leamos Juntos */}
-          <SeccionTitulo icono={iconoBiblia} letra="A)" titulo="Leamos Juntos" color="#3B3B8E" />
+          <SeccionTitulo emoji="📖" letra="A)" titulo="Leamos Juntos" color="#3B3B8E" />
 
           {devocional.pasaje && (
             <div className="mb-5 relative">
@@ -162,21 +162,32 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
           <Divisor />
 
           {/* B) Aprendemos en Familia */}
-          <SeccionTitulo icono={iconoBiblia} letra="B)" titulo="Aprendemos en Familia la verdad de Dios" color="#3B3B8E" />
+          <SeccionTitulo emoji="👨‍👩‍👧‍👦" letra="B)" titulo="Aprendemos en Familia la verdad de Dios" color="#3B3B8E" />
 
           {devocional.contenido && (
-            <div className="text-[15px] text-gray-800 leading-[1.95] mb-6 whitespace-pre-wrap" style={{ fontFamily: 'Georgia, serif', textAlign: 'justify' }}>
+            <div className="text-[15px] text-gray-800 leading-[1.95] mb-5 whitespace-pre-wrap" style={{ fontFamily: 'Georgia, serif', textAlign: 'justify' }}>
               {devocional.contenido}
             </div>
+          )}
+
+          {/* Imagen ilustrativa */}
+          {devocional.imagen_url && (
+            <img
+              src={devocional.imagen_url}
+              alt="Ilustración del devocional"
+              className="w-full rounded-2xl object-cover mb-6 shadow-sm"
+              style={{ maxHeight: 260 }}
+            />
           )}
 
           {/* Intercambiemos Ideas */}
           {devocional.intercambiemos_ideas && (
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-3">
-                <span style={{ color: '#F7941D' }}>{iconoIdea}</span>
+                <span className="text-xl">💡</span>
                 <h3 className="text-base font-bold" style={{ color: '#F7941D' }}>Intercambiemos ideas:</h3>
               </div>
+              <img src="/Intercambiemos_ideas.jpg" alt="Intercambiemos ideas" className="w-full rounded-2xl mb-3 shadow-sm" style={{ maxHeight: 180, objectFit: 'cover' }} />
               <div className="text-[15px] text-gray-700 leading-[1.9] whitespace-pre-wrap pl-1">
                 {devocional.intercambiemos_ideas}
               </div>
@@ -186,7 +197,7 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
           <Divisor />
 
           {/* C) Tomamos tiempo para agradecer y orar */}
-          <SeccionTitulo icono={iconoManos} letra="C)" titulo="Tomamos tiempo para agradecer y orar" color="#3B3B8E" />
+          <SeccionTitulo emoji="🙏" letra="C)" titulo="Tomamos tiempo para agradecer y orar" color="#3B3B8E" />
 
           {devocional.oracion && (
             <p className="text-[15px] text-gray-600 leading-[2] italic whitespace-pre-wrap mb-8" style={{ fontFamily: 'Georgia, serif' }}>
@@ -259,10 +270,10 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
   )
 }
 
-function SeccionTitulo({ icono, letra, titulo, color }: { icono: React.ReactNode; letra: string; titulo: string; color: string }) {
+function SeccionTitulo({ emoji, letra, titulo, color }: { emoji: string; letra: string; titulo: string; color: string }) {
   return (
     <div className="flex items-center gap-2 mb-4">
-      <span style={{ color }}>{icono}</span>
+      <span className="text-2xl">{emoji}</span>
       <h2 className="text-xl font-extrabold" style={{ color }}>{letra} {titulo}</h2>
     </div>
   )

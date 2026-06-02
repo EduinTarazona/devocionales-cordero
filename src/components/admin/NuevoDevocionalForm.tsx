@@ -21,9 +21,18 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
     pasaje: '', referencia: '', introduccion: '',
     contenido: '', intercambiemos_ideas: '', oracion: '',
   })
+  const [imagen, setImagen] = useState<File | null>(null)
+  const [imagenPreview, setImagenPreview] = useState<string | null>(null)
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState('')
   const supabase = createClient()
+
+  function handleImagen(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setImagen(file)
+    setImagenPreview(URL.createObjectURL(file))
+  }
 
   function set(key: string, value: string) {
     setForm(f => ({ ...f, [key]: value }))
@@ -36,8 +45,22 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
     }
     setGuardando(true)
     setError('')
+
+    // Subir imagen si hay una
+    let imagen_url = null
+    if (imagen) {
+      const ext = imagen.name.split('.').pop()
+      const nombre = `devocional-${Date.now()}.${ext}`
+      const { data: upload, error: uploadError } = await supabase.storage
+        .from('devocionales')
+        .upload(nombre, imagen, { upsert: true })
+      if (uploadError) { setError('Error al subir la imagen.'); setGuardando(false); return }
+      const { data: urlData } = supabase.storage.from('devocionales').getPublicUrl(nombre)
+      imagen_url = urlData.publicUrl
+    }
+
     await supabase.from('devocionales').update({ activo: false }).eq('activo', true)
-    const { error } = await supabase.from('devocionales').insert({ ...form, activo: true })
+    const { error } = await supabase.from('devocionales').insert({ ...form, imagen_url, activo: true })
     setGuardando(false)
     if (error) { setError('Error al publicar. Intenta de nuevo.'); return }
     onPublicado()
@@ -114,6 +137,24 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
           B) Aprendemos en Familia
         </p>
         {campo('Contenido / Desarrollo', 'contenido', true, true)}
+
+        {/* Subir imagen */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Imagen ilustrativa <span className="text-xs text-gray-400">(opcional)</span>
+          </label>
+          <label className="flex items-center gap-3 cursor-pointer border-2 border-dashed border-gray-200 rounded-xl px-4 py-3 hover:border-primary transition-colors">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B3B8E" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            <span className="text-sm text-gray-500">{imagen ? imagen.name : 'Seleccionar imagen'}</span>
+            <input type="file" accept="image/*" className="hidden" onChange={handleImagen} />
+          </label>
+          {imagenPreview && (
+            <img src={imagenPreview} alt="Preview" className="mt-2 rounded-xl w-full max-h-48 object-cover" />
+          )}
+        </div>
       </div>
 
       {/* Intercambiemos Ideas */}
