@@ -165,18 +165,26 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
           <SeccionTitulo emoji="👨‍👩‍👧‍👦" letra="B)" titulo="Aprendemos en Familia la verdad de Dios" color="#3B3B8E" />
 
           {devocional.contenido && (
-            <div className="mb-5 overflow-hidden">
+            <div className="mb-5">
               {devocional.imagen_url && (
                 <img
                   src={devocional.imagen_url}
                   alt="Ilustración del devocional"
                   className="rounded-2xl shadow-md object-cover"
-                  style={{ float: 'right', width: 200, height: 200, marginLeft: 16, marginBottom: 8 }}
+                  style={{ float: 'right', width: 200, height: 200, marginLeft: 18, marginBottom: 10 }}
                 />
               )}
-              <div className="text-[15px] text-gray-800 leading-[1.95] whitespace-pre-wrap" style={{ fontFamily: 'Georgia, serif', textAlign: 'justify' }}>
-                {devocional.contenido}
-              </div>
+              {devocional.contenido.split('\n').map((linea: string, i: number) =>
+                linea.trim() ? (
+                  <p key={i} className="text-[15px] text-gray-800 leading-[1.95] mb-[0.6rem]"
+                    style={{ fontFamily: 'Georgia, serif', textAlign: 'justify' }}>
+                    {linea}
+                  </p>
+                ) : (
+                  <div key={i} className="mb-1" />
+                )
+              )}
+              <div style={{ clear: 'both' }} />
             </div>
           )}
 
