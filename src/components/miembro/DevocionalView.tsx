@@ -167,15 +167,15 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
           {devocional.contenido && (
             <div className="mb-5">
               {devocional.imagen_url ? (
-                <div className="flex gap-4 items-start">
+                <div className="flex gap-5 items-start">
                   <div className="flex-1 text-[15px] text-gray-800 leading-[1.95] whitespace-pre-wrap" style={{ fontFamily: 'Georgia, serif', textAlign: 'justify' }}>
                     {devocional.contenido}
                   </div>
                   <img
                     src={devocional.imagen_url}
                     alt="Ilustración del devocional"
-                    className="rounded-xl shadow-sm object-cover flex-shrink-0"
-                    style={{ width: 150, height: 150 }}
+                    className="rounded-2xl shadow-md object-cover flex-shrink-0"
+                    style={{ width: 220, height: 220 }}
                   />
                 </div>
               ) : (
