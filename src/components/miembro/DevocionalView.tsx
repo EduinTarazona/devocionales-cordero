@@ -170,8 +170,8 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
                 <img
                   src={devocional.imagen_url}
                   alt="Ilustración del devocional"
-                  className="rounded-2xl shadow-sm object-cover mb-2 ml-3"
-                  style={{ float: 'right', width: '45%', maxHeight: 200 }}
+                  className="rounded-xl shadow-sm object-cover mb-1 ml-4 mt-1"
+                  style={{ float: 'right', width: '38%', maxHeight: 170 }}
                 />
               )}
               {devocional.contenido}
