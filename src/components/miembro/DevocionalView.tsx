@@ -166,18 +166,17 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
 
           {devocional.contenido && (
             <div className="text-[15px] text-gray-800 leading-[1.95] mb-5 whitespace-pre-wrap" style={{ fontFamily: 'Georgia, serif', textAlign: 'justify' }}>
+              {devocional.imagen_url && (
+                <img
+                  src={devocional.imagen_url}
+                  alt="Ilustración del devocional"
+                  className="rounded-2xl shadow-sm object-cover mb-2 ml-3"
+                  style={{ float: 'right', width: '45%', maxHeight: 200 }}
+                />
+              )}
               {devocional.contenido}
+              <div style={{ clear: 'both' }} />
             </div>
-          )}
-
-          {/* Imagen ilustrativa */}
-          {devocional.imagen_url && (
-            <img
-              src={devocional.imagen_url}
-              alt="Ilustración del devocional"
-              className="w-full rounded-2xl object-cover mb-6 shadow-sm"
-              style={{ maxHeight: 260 }}
-            />
           )}
 
           {/* Intercambiemos Ideas */}
@@ -187,7 +186,7 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
                 <span className="text-xl">💡</span>
                 <h3 className="text-base font-bold" style={{ color: '#F7941D' }}>Intercambiemos ideas:</h3>
               </div>
-              <img src="/Intercambiemos_ideas.jpg" alt="Intercambiemos ideas" className="w-full rounded-2xl mb-3 shadow-sm" style={{ maxHeight: 180, objectFit: 'cover' }} />
+              <img src="/Intercambiemos_ideas.png" alt="Intercambiemos ideas" className="w-full rounded-2xl mb-3" style={{ maxHeight: 200, objectFit: 'contain' }} />
               <div className="text-[15px] text-gray-700 leading-[1.9] whitespace-pre-wrap pl-1">
                 {devocional.intercambiemos_ideas}
               </div>
