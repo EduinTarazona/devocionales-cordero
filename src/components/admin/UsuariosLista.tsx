@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { displayRol, ROL_OPTIONS } from '@/lib/roles'
+import { displayRol, ROL_OPTIONS, esAdmin } from '@/lib/roles'
 
 type Usuario = {
   id: string
@@ -10,6 +10,7 @@ type Usuario = {
   rol: string
   activo: boolean
   created_at: string
+  red_asignada: string | null
 }
 
 export default function UsuariosLista({ currentUserId }: { currentUserId: string }) {
@@ -25,7 +26,7 @@ export default function UsuariosLista({ currentUserId }: { currentUserId: string
     setError('')
     const { data, error } = await supabase
       .from('perfiles')
-      .select('id, nombre, email, rol, activo, created_at')
+      .select('id, nombre, email, rol, activo, created_at, red_asignada')
       .order('created_at', { ascending: false })
     setCargando(false)
     if (error) { setError('No se pudieron cargar los usuarios.'); return }
@@ -40,6 +41,14 @@ export default function UsuariosLista({ currentUserId }: { currentUserId: string
     setGuardandoId(null)
     if (error) { setError(`No se pudo actualizar el rol: ${error.message}`); return }
     setUsuarios(us => us.map(u => u.id === id ? { ...u, rol } : u))
+  }
+
+  async function cambiarRed(id: string, red_asignada: string) {
+    setGuardandoId(id)
+    const { error } = await supabase.from('perfiles').update({ red_asignada: red_asignada || null }).eq('id', id)
+    setGuardandoId(null)
+    if (error) { setError(`No se pudo actualizar la red: ${error.message}`); return }
+    setUsuarios(us => us.map(u => u.id === id ? { ...u, red_asignada: red_asignada || null } : u))
   }
 
   async function toggleActivo(id: string, activo: boolean) {
@@ -59,20 +68,30 @@ export default function UsuariosLista({ currentUserId }: { currentUserId: string
   const stats = {
     total: usuarios.length,
     activos: usuarios.filter(u => u.activo).length,
-    admins: usuarios.filter(u => ['pastor', 'admin'].includes(u.rol)).length,
-    lideres: usuarios.filter(u => u.rol === 'lider').length,
+    pastores: usuarios.filter(u => esAdmin(u.rol)).length,
+    miembros: usuarios.filter(u => u.rol === 'miembro').length,
+  }
+
+  function badgeColor(rol: string) {
+    if (['pastor_general', 'plan_de_vida', 'pastor', 'admin'].includes(rol))
+      return 'bg-primary-light text-primary'
+    if (rol === 'pastor_supervisor')
+      return 'bg-blue-100 text-blue-700'
+    if (rol === 'pastor_red')
+      return 'bg-orange-100 text-orange-700'
+    return 'bg-gray-100 text-gray-600'
   }
 
   return (
     <div className="space-y-5">
 
       <div className="card">
-        <h2 className="font-bold text-gray-900">Usuarios de la congregacion</h2>
+        <h2 className="font-bold text-gray-900">Usuarios de la congregación</h2>
         <div className="grid grid-cols-4 gap-2 text-center pt-3">
           <div><p className="text-xl font-bold text-primary">{stats.total}</p><p className="text-xs text-gray-400">Total</p></div>
           <div><p className="text-xl font-bold text-teal">{stats.activos}</p><p className="text-xs text-gray-400">Activos</p></div>
-          <div><p className="text-xl font-bold text-orange-500">{stats.lideres}</p><p className="text-xs text-gray-400">Lideres</p></div>
-          <div><p className="text-xl font-bold text-gray-700">{stats.admins}</p><p className="text-xs text-gray-400">Admins</p></div>
+          <div><p className="text-xl font-bold text-orange-500">{stats.miembros}</p><p className="text-xs text-gray-400">Miembros</p></div>
+          <div><p className="text-xl font-bold text-gray-700">{stats.pastores}</p><p className="text-xs text-gray-400">Pastores</p></div>
         </div>
       </div>
 
@@ -101,29 +120,39 @@ export default function UsuariosLista({ currentUserId }: { currentUserId: string
                   <div className="min-w-0 flex-1">
                     <p className="font-medium text-gray-900 text-sm truncate">
                       {u.nombre ?? u.email ?? 'Sin nombre'}
-                      {esYo && <span className="ml-2 text-xs text-gray-400">(tu)</span>}
+                      {esYo && <span className="ml-2 text-xs text-gray-400">(tú)</span>}
                     </p>
                     <p className="text-xs text-gray-500 truncate">{u.email}</p>
                   </div>
-                  <span className={`badge ${
-                    u.rol === 'pastor' || u.rol === 'admin' ? 'bg-primary-light text-primary' :
-                    u.rol === 'lider' ? 'bg-teal-light text-teal' :
-                    'bg-gray-100 text-gray-600'
-                  }`}>{displayRol(u.rol)}</span>
+                  <span className={`badge ${badgeColor(u.rol)}`}>{displayRol(u.rol)}</span>
                 </div>
+
                 <div className="flex items-center gap-2 pt-1 flex-wrap">
+                  {/* Selector de rol */}
                   <select
                     value={u.rol}
                     onChange={e => cambiarRol(u.id, e.target.value)}
                     disabled={guardando || esYo}
                     className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 bg-white disabled:opacity-50"
                   >
-                    {/* Preserva el valor actual si no esta en las opciones (ej. legacy 'pastor') */}
                     {!ROL_OPTIONS.find(o => o.value === u.rol) && (
                       <option value={u.rol}>{displayRol(u.rol)}</option>
                     )}
                     {ROL_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </select>
+
+                  {/* Red asignada — solo visible para pastor_red */}
+                  {u.rol === 'pastor_red' && (
+                    <input
+                      type="text"
+                      placeholder="Red (ej: 1)"
+                      defaultValue={u.red_asignada ?? ''}
+                      onBlur={e => cambiarRed(u.id, e.target.value)}
+                      disabled={guardando || esYo}
+                      className="text-xs border border-orange-200 rounded-lg px-2 py-1.5 bg-white w-24 disabled:opacity-50 focus:outline-none focus:border-orange-400"
+                    />
+                  )}
+
                   <button
                     onClick={() => toggleActivo(u.id, u.activo)}
                     disabled={guardando || esYo}

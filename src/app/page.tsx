@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { getMyRole } from '@/lib/auth/role'
+import { esAdmin } from '@/lib/roles'
 
 export default async function Home() {
   const supabase = createClient()
@@ -17,6 +17,6 @@ export default async function Home() {
   if (!perfil?.perfil_completo) redirect('/registro')
 
   const rol = perfil?.rol ?? 'miembro'
-  if (rol === 'admin' || rol === 'pastor') redirect('/admin')
+  if (esAdmin(rol)) redirect('/admin')
   redirect('/devocional')
 }

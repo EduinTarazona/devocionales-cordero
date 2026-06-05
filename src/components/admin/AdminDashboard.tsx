@@ -4,7 +4,7 @@ import EditarDevocionalForm from './EditarDevocionalForm'
 import ReportesLista from './ReportesLista'
 import UsuariosLista from './UsuariosLista'
 import AppShell from '../AppShell'
-import { displayRol } from '@/lib/roles'
+import { displayRol, puedeVerEconomico } from '@/lib/roles'
 
 type MiembroPendiente = { id: string; nombre: string | null; email: string | null }
 type Vista = 'resumen' | 'nuevo' | 'editar' | 'reportes' | 'usuarios'
@@ -17,6 +17,7 @@ type Props = {
   ofrendaMes: number
   noReportaron: MiembroPendiente[]
   rol: string
+  redAsignada?: string | null
   vista: Vista
 }
 
@@ -28,7 +29,8 @@ const TITULO_VISTA: Record<Vista, string> = {
   usuarios: 'Usuarios',
 }
 
-export default function AdminDashboard({ user, devocionalActivo, reportesSemana, totalMiembros, ofrendaMes, noReportaron, rol, vista }: Props) {
+export default function AdminDashboard({ user, devocionalActivo, reportesSemana, totalMiembros, ofrendaMes, noReportaron, rol, redAsignada, vista }: Props) {
+  const verEconomico = puedeVerEconomico(rol)
   const totalPersonas = reportesSemana.reduce((s, r) => s + (r.personas_participaron ?? 0), 0)
   const totalOfrenda = reportesSemana.filter(r => r.hubo_ofrenda).reduce((s, r) => s + (r.monto_ofrenda ?? 0), 0)
   const reportaron = reportesSemana.length
@@ -65,7 +67,7 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
               ))}
             </div>
 
-            {(totalOfrenda > 0 || ofrendaMes > 0) && (
+            {verEconomico && (totalOfrenda > 0 || ofrendaMes > 0) && (
               <div className="card border-teal border space-y-3">
                 <div>
                   <p className="text-sm text-gray-500">Ofrenda esta semana</p>
@@ -182,7 +184,7 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
             <a href="/admin?vista=nuevo" className="btn-primary text-sm px-4 py-2 inline-block">Publicar uno nuevo</a>
           </div>
         )}
-        {vista === 'reportes' && <ReportesLista reportes={reportesSemana} totalMiembros={totalMiembros} />}
+        {vista === 'reportes' && <ReportesLista reportes={reportesSemana} totalMiembros={totalMiembros} rol={rol} />}
         {vista === 'usuarios' && <UsuariosLista currentUserId={user.id} />}
 
       </div>

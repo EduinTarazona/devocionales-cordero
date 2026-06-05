@@ -28,7 +28,8 @@ export async function GET(request: NextRequest) {
             target = '/registro'
           } else {
             const rol = perfil?.rol ?? 'miembro'
-            target = rol === 'admin' || rol === 'pastor' ? '/admin' : '/devocional'
+            const rolesAdmin = ['admin', 'pastor', 'pastor_general', 'plan_de_vida', 'pastor_supervisor', 'pastor_red']
+            target = rolesAdmin.includes(rol) ? '/admin' : '/devocional'
           }
         }
       }

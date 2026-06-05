@@ -1,6 +1,7 @@
 'use client'
+import { puedeVerEconomico } from '@/lib/roles'
 
-type Props = { reportes: any[]; totalMiembros: number }
+type Props = { reportes: any[]; totalMiembros: number; rol?: string }
 
 const PRIMARY = '#3B3B8E'
 const ORANGE  = '#F7941D'
@@ -17,7 +18,8 @@ function simboloMoneda(moneda: string | null) {
   return '$' // USD por defecto
 }
 
-export default function ReportesLista({ reportes, totalMiembros }: Props) {
+export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }: Props) {
+  const verEconomico = puedeVerEconomico(rol)
   const totalPersonas   = reportes.reduce((s, r) => s + totalParticiparon(r), 0)
   const totalAdultos    = reportes.reduce((s, r) => s + (r.adultos ?? 0), 0)
   const totalNinos      = reportes.reduce((s, r) => s + (r.ninos ?? 0), 0)
@@ -63,9 +65,11 @@ export default function ReportesLista({ reportes, totalMiembros }: Props) {
           sub={`${totalAdultos} adultos · ${totalNinos} niños`} accent={ORANGE} />
         <KPI icon="📊" label="Promedio / familia" value={String(promedio)}
           sub="personas por hogar" accent={PRIMARY} />
-        <KPI icon="💛" label="Ofrenda semana"
-          value={totalOfrenda > 0 ? `${simbolo}${totalOfrenda.toLocaleString()}` : '—'}
-          sub={conOfrenda.length > 0 ? `${conOfrenda.length} familias dieron` : 'Sin ofrendas'} accent={ORANGE} />
+        {verEconomico && (
+          <KPI icon="💛" label="Ofrenda semana"
+            value={totalOfrenda > 0 ? `${simbolo}${totalOfrenda.toLocaleString()}` : '—'}
+            sub={conOfrenda.length > 0 ? `${conOfrenda.length} familias dieron` : 'Sin ofrendas'} accent={ORANGE} />
+        )}
       </div>
 
       {/* ── Participación + Ofrenda ── */}
@@ -98,23 +102,30 @@ export default function ReportesLista({ reportes, totalMiembros }: Props) {
         </div>
 
         {/* Ofrenda */}
-        <div className="card py-4 space-y-3">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Ofrenda</p>
-          <BarraProgreso
-            label="Familias que dieron"
-            value={conOfrenda.length}
-            total={reportes.length}
-            color={ORANGE}
-          />
-          {totalOfrenda > 0 ? (
-            <div className="space-y-1.5 pt-1">
-              <FilaOfrenda label="Total recaudado" value={`${simbolo}${totalOfrenda.toLocaleString()}`} bold accent={ORANGE} />
-              <FilaOfrenda label="Promedio familia" value={`${simbolo}${promedioOfrenda.toLocaleString()}`} />
-            </div>
-          ) : (
-            <p className="text-[11px] text-gray-400 italic">Sin montos registrados</p>
-          )}
-        </div>
+        {verEconomico ? (
+          <div className="card py-4 space-y-3">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Ofrenda</p>
+            <BarraProgreso
+              label="Familias que dieron"
+              value={conOfrenda.length}
+              total={reportes.length}
+              color={ORANGE}
+            />
+            {totalOfrenda > 0 ? (
+              <div className="space-y-1.5 pt-1">
+                <FilaOfrenda label="Total recaudado" value={`${simbolo}${totalOfrenda.toLocaleString()}`} bold accent={ORANGE} />
+                <FilaOfrenda label="Promedio familia" value={`${simbolo}${promedioOfrenda.toLocaleString()}`} />
+              </div>
+            ) : (
+              <p className="text-[11px] text-gray-400 italic">Sin montos registrados</p>
+            )}
+          </div>
+        ) : (
+          <div className="card py-4 flex flex-col items-center justify-center text-center space-y-1">
+            <span className="text-2xl">🔒</span>
+            <p className="text-[11px] text-gray-400">Datos económicos<br/>no disponibles</p>
+          </div>
+        )}
       </div>
 
       {/* ── Barras: personas por familia ── */}
@@ -182,7 +193,7 @@ export default function ReportesLista({ reportes, totalMiembros }: Props) {
                     {r.hubo_ofrenda && (
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
                         style={{ background: '#FEF3E2', color: ORANGE }}>
-                        {r.monto_ofrenda
+                        {verEconomico && r.monto_ofrenda
                           ? `${simboloMoneda(r.moneda_ofrenda)}${r.monto_ofrenda.toLocaleString()} ${r.moneda_ofrenda ?? 'USD'}`
                           : '💛 ofrenda'}
                       </span>

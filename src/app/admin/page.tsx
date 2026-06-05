@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import AdminDashboard from '@/components/admin/AdminDashboard'
 import { getMyRole } from '@/lib/auth/role'
+import { esAdmin } from '@/lib/roles'
 
 export default async function AdminPage({ searchParams }: { searchParams: { vista?: string } }) {
   const vistaParam = searchParams?.vista
@@ -13,9 +14,15 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
   if (!user) redirect('/login')
 
   const rol = await getMyRole(supabase, user.id)
-  if (!['admin', 'pastor'].includes(rol)) {
-    redirect('/devocional')
-  }
+  if (!esAdmin(rol)) redirect('/devocional')
+
+  // Obtener red asignada del pastor (para pastor_red)
+  const { data: miPerfil } = await supabase
+    .from('perfiles')
+    .select('red_asignada')
+    .eq('id', user.id)
+    .maybeSingle()
+  const redAsignada = miPerfil?.red_asignada ?? null
 
   const { data: devocionalActivo } = await supabase
     .from('devocionales')
@@ -33,11 +40,18 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
   inicioMes.setDate(1)
   inicioMes.setHours(0, 0, 0, 0)
 
-  const { data: reportesSemana } = await supabase
+  // Pastor de red: solo reportes de su red
+  let queryReportes = supabase
     .from('reportes')
     .select('*, perfiles(nombre, email)')
     .gte('created_at', inicioSemana.toISOString())
     .order('created_at', { ascending: false })
+
+  if (rol === 'pastor_red' && redAsignada) {
+    queryReportes = queryReportes.eq('red', redAsignada) as any
+  }
+
+  const { data: reportesSemana } = await queryReportes
 
   const { data: reportesMes } = await supabase
     .from('reportes')
@@ -83,6 +97,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
       ofrendaMes={ofrendaMes}
       noReportaron={noReportaron}
       rol={rol}
+      redAsignada={redAsignada}
       vista={vista}
     />
   )
