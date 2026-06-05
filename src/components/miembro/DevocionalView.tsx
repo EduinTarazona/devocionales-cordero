@@ -259,7 +259,8 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
             </div>
             <div className="px-6 pb-6">
               <a
-                href="mailto:casasdevidaccmgsancristobal@gmail.com"
+                href="https://mail.google.com/mail/?view=cm&to=casasdevidaccmgsancristobal@gmail.com"
+                target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2.5 w-full py-3.5 rounded-2xl text-sm font-bold transition-opacity hover:opacity-90"
                 style={{ background: '#F7941D', color: '#fff' }}
               >
