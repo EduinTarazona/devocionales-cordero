@@ -6,8 +6,21 @@ const PRIMARY = '#3B3B8E'
 const ORANGE  = '#F7941D'
 const LIGHT   = '#EBEBF8'
 
+function totalParticiparon(r: any) {
+  if (r.adultos != null || r.ninos != null) return (r.adultos ?? 0) + (r.ninos ?? 0)
+  return r.personas_participaron ?? 0
+}
+
+function simboloMoneda(moneda: string | null) {
+  if (moneda === 'Bs') return 'Bs.'
+  if (moneda === 'Pesos') return '$'
+  return '$' // USD por defecto
+}
+
 export default function ReportesLista({ reportes, totalMiembros }: Props) {
-  const totalPersonas   = reportes.reduce((s, r) => s + (r.personas_participaron ?? 0), 0)
+  const totalPersonas   = reportes.reduce((s, r) => s + totalParticiparon(r), 0)
+  const totalAdultos    = reportes.reduce((s, r) => s + (r.adultos ?? 0), 0)
+  const totalNinos      = reportes.reduce((s, r) => s + (r.ninos ?? 0), 0)
   const conOfrenda      = reportes.filter(r => r.hubo_ofrenda)
   const totalOfrenda    = conOfrenda.reduce((s, r) => s + (r.monto_ofrenda ?? 0), 0)
   const noReportaron    = Math.max(0, totalMiembros - reportes.length)
@@ -15,11 +28,15 @@ export default function ReportesLista({ reportes, totalMiembros }: Props) {
   const promedio        = reportes.length > 0 ? (totalPersonas / reportes.length).toFixed(1) : '—'
   const promedioOfrenda = conOfrenda.length > 0 ? Math.round(totalOfrenda / conOfrenda.length) : 0
 
+  // Moneda predominante para mostrar en totales
+  const monedaPred = conOfrenda.length > 0 ? (conOfrenda[0].moneda_ofrenda ?? 'USD') : 'USD'
+  const simbolo = simboloMoneda(monedaPred)
+
   // Barras: top 8 por personas
   const barData = [...reportes]
-    .sort((a, b) => (b.personas_participaron ?? 0) - (a.personas_participaron ?? 0))
+    .sort((a, b) => totalParticiparon(b) - totalParticiparon(a))
     .slice(0, 8)
-  const maxPersonas = barData[0]?.personas_participaron ?? 1
+  const maxPersonas = totalParticiparon(barData[0]) || 1
 
   // Actividad por día
   const diasMap: Record<string, number> = {}
@@ -43,11 +60,11 @@ export default function ReportesLista({ reportes, totalMiembros }: Props) {
         <KPI icon="🏠" label="Familias" value={`${reportes.length}/${totalMiembros}`}
           sub={`${pct}% participación`} accent={PRIMARY} />
         <KPI icon="👥" label="Personas alcanzadas" value={String(totalPersonas)}
-          sub="esta semana" accent={ORANGE} />
+          sub={`${totalAdultos} adultos · ${totalNinos} niños`} accent={ORANGE} />
         <KPI icon="📊" label="Promedio / familia" value={String(promedio)}
           sub="personas por hogar" accent={PRIMARY} />
         <KPI icon="💛" label="Ofrenda semana"
-          value={totalOfrenda > 0 ? `$${totalOfrenda.toLocaleString()}` : '—'}
+          value={totalOfrenda > 0 ? `${simbolo}${totalOfrenda.toLocaleString()}` : '—'}
           sub={conOfrenda.length > 0 ? `${conOfrenda.length} familias dieron` : 'Sin ofrendas'} accent={ORANGE} />
       </div>
 
@@ -91,8 +108,8 @@ export default function ReportesLista({ reportes, totalMiembros }: Props) {
           />
           {totalOfrenda > 0 ? (
             <div className="space-y-1.5 pt-1">
-              <FilaOfrenda label="Total recaudado" value={`$${totalOfrenda.toLocaleString()}`} bold accent={ORANGE} />
-              <FilaOfrenda label="Promedio familia" value={`$${promedioOfrenda.toLocaleString()}`} />
+              <FilaOfrenda label="Total recaudado" value={`${simbolo}${totalOfrenda.toLocaleString()}`} bold accent={ORANGE} />
+              <FilaOfrenda label="Promedio familia" value={`${simbolo}${promedioOfrenda.toLocaleString()}`} />
             </div>
           ) : (
             <p className="text-[11px] text-gray-400 italic">Sin montos registrados</p>
@@ -107,7 +124,7 @@ export default function ReportesLista({ reportes, totalMiembros }: Props) {
           <div className="space-y-2">
             {barData.map((r, i) => {
               const nombre = (r.perfiles?.nombre ?? r.perfiles?.email ?? 'Miembro').split(' ')[0]
-              const n = r.personas_participaron ?? 0
+              const n = totalParticiparon(r)
               const w = Math.round((n / maxPersonas) * 100)
               return (
                 <div key={i} className="flex items-center gap-2">
@@ -156,30 +173,42 @@ export default function ReportesLista({ reportes, totalMiembros }: Props) {
         ) : (
           <div className="divide-y divide-gray-50">
             {reportes.map(r => (
-              <div key={r.id} className="flex items-center justify-between py-2.5">
-                <div className="min-w-0 flex-1">
+              <div key={r.id} className="py-2.5 space-y-0.5">
+                <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-gray-800 truncate">
                     {r.perfiles?.nombre ?? r.perfiles?.email ?? 'Miembro'}
                   </p>
+                  <div className="flex items-center gap-1.5 flex-shrink-0 ml-3">
+                    {r.hubo_ofrenda && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                        style={{ background: '#FEF3E2', color: ORANGE }}>
+                        {r.monto_ofrenda
+                          ? `${simboloMoneda(r.moneda_ofrenda)}${r.monto_ofrenda.toLocaleString()} ${r.moneda_ofrenda ?? 'USD'}`
+                          : '💛 ofrenda'}
+                      </span>
+                    )}
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                      style={{ background: LIGHT, color: PRIMARY }}>
+                      {totalParticiparon(r)} pers.
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-x-3 gap-y-0.5">
                   <p className="text-[11px] text-gray-400">
                     {new Date(r.created_at).toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'short' })}
                   </p>
-                  {r.nota && (
-                    <p className="text-[11px] text-gray-500 italic mt-0.5 truncate">"{r.nota}"</p>
+                  {(r.adultos != null || r.ninos != null) && (
+                    <p className="text-[11px] text-gray-500">
+                      👨‍👩‍👧 {r.adultos ?? 0} adultos · {r.ninos ?? 0} niños
+                    </p>
+                  )}
+                  {r.red && (
+                    <p className="text-[11px] text-gray-500">🔴 Red {r.red}</p>
                   )}
                 </div>
-                <div className="flex items-center gap-1.5 flex-shrink-0 ml-3">
-                  {r.hubo_ofrenda && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                      style={{ background: '#FEF3E2', color: ORANGE }}>
-                      {r.monto_ofrenda ? `$${r.monto_ofrenda.toLocaleString()}` : '💛'}
-                    </span>
-                  )}
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                    style={{ background: LIGHT, color: PRIMARY }}>
-                    {r.personas_participaron} pers.
-                  </span>
-                </div>
+                {r.nota && (
+                  <p className="text-[11px] text-gray-500 italic truncate">"{r.nota}"</p>
+                )}
               </div>
             ))}
           </div>
