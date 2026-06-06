@@ -66,7 +66,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
     .from('perfiles')
     .select('*', { count: 'exact', head: true })
     .eq('activo', true)
-    .not('rol', 'in', '(admin,pastor,pastor_general,plan_de_vida,pastor_supervisor,pastor_red)')
+    .in('rol', ['miembro', 'lider'])
 
   // Miembros que NO han reportado el devocional activo
   let noReportaron: { id: string; nombre: string | null; email: string | null }[] = []
