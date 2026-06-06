@@ -73,16 +73,14 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
       </div>
 
       {/* ── Participación + Ofrenda ── */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className={`grid gap-3 ${verEconomico ? 'grid-cols-2' : 'grid-cols-1'}`}>
 
         {/* Donut SVG */}
-        <div className="card flex flex-col items-center py-4">
+        <div className={`card py-4 ${verEconomico ? 'flex flex-col items-center' : 'flex items-center gap-6 px-6'}`}>
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-2">Participación</p>
-          <div className="relative" style={{ width: 112, height: 112 }}>
+          <div className="relative flex-shrink-0" style={{ width: 112, height: 112 }}>
             <svg width="112" height="112" viewBox="0 0 112 112">
-              {/* Pista gris */}
               <circle cx={CX} cy={CY} r={R} fill="none" stroke="#E5E7EB" strokeWidth="10" />
-              {/* Arco de participación */}
               <circle
                 cx={CX} cy={CY} r={R} fill="none"
                 stroke={PRIMARY} strokeWidth="10"
@@ -96,9 +94,16 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
               <span className="text-[9px] text-gray-400">reportaron</span>
             </div>
           </div>
-          <p className="text-[10px] text-gray-400 mt-1 text-center">
-            {reportes.length} sí · {noReportaron} pendientes
-          </p>
+          {verEconomico ? (
+            <p className="text-[10px] text-gray-400 mt-1 text-center">
+              {reportes.length} sí · {noReportaron} pendientes
+            </p>
+          ) : (
+            <div>
+              <p className="text-sm font-semibold text-gray-700">{reportes.length} familias reportaron</p>
+              <p className="text-[12px] text-gray-400">{noReportaron} pendientes · {totalPersonas} personas alcanzadas</p>
+            </div>
+          )}
         </div>
 
         {/* Ofrenda — solo visible para roles con acceso económico */}
