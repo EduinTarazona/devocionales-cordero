@@ -98,7 +98,8 @@ function iniciales(nombre: string | undefined, email: string): string {
 
 export default function SidebarNav({ user, rol, currentPath, currentSearch, onNavigate }: Props) {
   const supabase = createClient()
-  const esAdmin = rol === 'admin' || rol === 'pastor'
+  const rolesAdmin = ['admin', 'pastor', 'pastor_general', 'plan_de_vida', 'pastor_supervisor', 'pastor_red']
+  const esAdmin = rolesAdmin.includes(rol)
   const items = esAdmin ? ITEMS_ADMIN : ITEMS_MIEMBRO
   const params = new URLSearchParams(currentSearch)
 
