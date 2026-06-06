@@ -202,11 +202,14 @@ export async function GET() {
       font-family: 'Lora', Georgia, serif;
       font-size: 13.5px;
       line-height: 1.85;
-      color: #333;
+      color: #222 !important;
       margin-bottom: 16px;
       text-align: justify;
       white-space: pre-wrap;
     }
+    /* reset link colors globally */
+    a { color: inherit !important; text-decoration: none !important; }
+    * { color: inherit; }
 
     /* ── DIVISOR ── */
     .divider {
@@ -231,7 +234,7 @@ export async function GET() {
       font-family: 'Lora', Georgia, serif;
       font-size: 13.5px;
       line-height: 1.85;
-      color: #222;
+      color: #222 !important;
       text-align: justify;
       margin-bottom: 7px;
     }
@@ -259,7 +262,7 @@ export async function GET() {
       font-family: 'Lora', Georgia, serif;
       font-size: 13.5px;
       line-height: 1.85;
-      color: #333;
+      color: #222 !important;
       white-space: pre-wrap;
     }
 
@@ -268,7 +271,7 @@ export async function GET() {
       font-family: 'Lora', Georgia, serif;
       font-size: 13.5px;
       line-height: 1.9;
-      color: #333;
+      color: #222 !important;
       white-space: pre-wrap;
       margin-bottom: 20px;
     }
