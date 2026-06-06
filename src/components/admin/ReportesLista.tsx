@@ -101,8 +101,8 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
           </p>
         </div>
 
-        {/* Ofrenda */}
-        {verEconomico ? (
+        {/* Ofrenda — solo visible para roles con acceso económico */}
+        {verEconomico && (
           <div className="card py-4 space-y-3">
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Ofrenda</p>
             <BarraProgreso
@@ -119,11 +119,6 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
             ) : (
               <p className="text-[11px] text-gray-400 italic">Sin montos registrados</p>
             )}
-          </div>
-        ) : (
-          <div className="card py-4 flex flex-col items-center justify-center text-center space-y-1">
-            <span className="text-2xl">🔒</span>
-            <p className="text-[11px] text-gray-400">Datos económicos<br/>no disponibles</p>
           </div>
         )}
       </div>
