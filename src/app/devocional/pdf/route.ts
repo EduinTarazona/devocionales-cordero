@@ -20,6 +20,18 @@ export async function GET() {
     : d.tipo === 'grupal' ? 'Devocional Grupal'
     : 'Devocional Empresarial'
 
+  // Split contenido into paragraphs
+  const contenidoParrafos: string[] = []
+  if (d.contenido) {
+    const lineas = d.contenido.split('\n')
+    let actual: string[] = []
+    for (const linea of lineas) {
+      if (linea.trim()) { actual.push(linea.trim()) }
+      else if (actual.length > 0) { contenidoParrafos.push(actual.join(' ')); actual = [] }
+    }
+    if (actual.length > 0) contenidoParrafos.push(actual.join(' '))
+  }
+
   const html = `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -27,21 +39,21 @@ export async function GET() {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${escHtml(d.titulo)}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Inter', Arial, sans-serif;
-      background: #F7F2EA;
+      background: #fff;
       color: #1a1a1a;
-      padding: 40px 24px;
+      padding: 32px 28px;
     }
-    .page { max-width: 680px; margin: 0 auto; }
+    .page { max-width: 700px; margin: 0 auto; }
 
-    /* TOOLBAR */
+    /* ── TOOLBAR ── */
     .toolbar {
       display: flex; gap: 10px; justify-content: flex-end;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
     .btn-print {
       background: linear-gradient(90deg, #3B3B8E, #F7941D); color: #fff; border: none;
@@ -54,136 +66,236 @@ export async function GET() {
       font-size: 14px; cursor: pointer; font-family: 'Inter', sans-serif;
     }
 
-    /* HEADER */
+    /* ── HEADER ── */
     .header {
-      display: flex; justify-content: space-between; align-items: flex-end;
-      border-bottom: 2px solid #3B3B8E; padding-bottom: 14px; margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #3B3B8E;
+      padding-bottom: 12px;
+      margin-bottom: 10px;
     }
-    .logo { line-height: 1.1; }
-    .logo .casas { font-size: 20px; font-weight: 800; color: #3B3B8E; }
-    .logo .de { font-size: 9px; color: #888; letter-spacing: 1px; text-transform: uppercase; display: block; }
-    .logo .vida { font-size: 24px; font-weight: 900; color: #F7941D; letter-spacing: 3px; display: block; }
-    .header-right { text-align: right; }
-    .semana { font-size: 12px; font-weight: 700; color: #333; }
-    .tipo-label { font-size: 13px; font-weight: 700; color: #F7941D; font-style: italic; }
-
-    /* SERIE */
-    .serie { font-size: 11px; font-weight: 600; color: #888; text-align: center; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    /* TÍTULO */
-    .titulo-box {
-      border: 2px solid #3B3B8E; border-radius: 12px;
-      padding: 14px 20px; text-align: center; margin-bottom: 24px;
-      background: #fff;
+    .header-logo-left {
+      width: 70px;
+      flex-shrink: 0;
     }
-    h1 {
-      font-size: 26px; font-weight: 800; line-height: 1.2;
+    .header-logo-left img {
+      width: 70px;
+      height: auto;
+      object-fit: contain;
+    }
+    .header-center {
+      flex: 1;
+      text-align: center;
+      padding: 0 12px;
+    }
+    .header-center .iglesia {
+      font-size: 12px;
+      font-weight: 900;
       color: #3B3B8E;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      line-height: 1.3;
+    }
+    .header-center .depto {
+      font-size: 10px;
+      font-weight: 600;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+    .header-center .casas {
+      font-size: 10px;
+      font-weight: 700;
+      color: #F7941D;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 1px;
+    }
+    .header-logo-right {
+      width: 56px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .header-logo-right img {
+      width: 52px;
+      height: auto;
+      object-fit: contain;
     }
 
-    /* SECCIÓN TÍTULO */
-    .seccion-titulo {
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 14px; margin-top: 4px;
+    /* ── META INFO (serie/bosquejo/semana) ── */
+    .meta-info {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 10.5px;
+      color: #555;
+      font-weight: 600;
+      margin-bottom: 10px;
+      margin-top: 6px;
+      padding-left: 2px;
     }
-    .seccion-titulo h2 {
-      font-size: 17px; font-weight: 800; color: #3B3B8E;
+    .meta-info span { white-space: nowrap; }
+    .meta-info .tipo-badge {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      color: #F7941D;
+      font-style: italic;
     }
-    .seccion-emoji { font-size: 18px; }
 
-    /* VERSÍCULO */
-    blockquote {
-      margin: 0 0 16px;
-      padding: 0 0 0 18px;
-      border-left: 3px solid rgba(59,59,142,0.4);
+    /* ── TÍTULO ── */
+    .titulo-box {
+      border: 2px solid #3B3B8E;
+      border-radius: 8px;
+      padding: 12px 18px;
+      text-align: center;
+      margin-bottom: 18px;
+      background: #fff;
       position: relative;
     }
-    .quote-mark {
-      font-family: 'Lora', Georgia, serif;
-      font-size: 72px; line-height: 0.8;
-      color: rgba(59,59,142,0.10);
-      position: absolute; top: -4px; left: -8px;
-      pointer-events: none;
+    .titulo-box::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 10%; right: 10%;
+      height: 4px;
+      background: #F7941D;
+      border-radius: 0 0 4px 4px;
     }
-    blockquote p {
-      font-family: 'Lora', Georgia, serif;
-      font-size: 16px; font-weight: 700; line-height: 1.8;
-      color: #222; position: relative; text-align: center;
-    }
-    blockquote footer {
+    h1 {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.25;
+      color: #3B3B8E;
       font-family: 'Inter', sans-serif;
-      font-size: 12px; font-weight: 700;
-      color: #3B3B8E; margin-top: 10px; letter-spacing: 0.5px; text-align: center;
     }
 
-    /* INTRODUCCIÓN */
+    /* ── SECCIÓN HEADING ── */
+    .seccion-titulo {
+      font-size: 15px;
+      font-weight: 800;
+      color: #3B3B8E;
+      margin-bottom: 10px;
+      margin-top: 6px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ── VERSÍCULO ── */
+    .versiculo-box {
+      text-align: center;
+      margin-bottom: 12px;
+      padding: 0 10px;
+    }
+    .versiculo-texto {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 14.5px;
+      font-weight: 700;
+      line-height: 1.75;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+    .versiculo-ref {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: #3B3B8E;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── INTRODUCCIÓN ── */
     .introduccion {
       font-family: 'Lora', Georgia, serif;
-      font-size: 14px; line-height: 1.9;
-      color: #444; margin-bottom: 20px;
+      font-size: 13.5px;
+      line-height: 1.85;
+      color: #333;
+      margin-bottom: 16px;
+      text-align: justify;
       white-space: pre-wrap;
     }
 
-    /* DIVISOR */
+    /* ── DIVISOR ── */
     .divider {
-      display: flex; align-items: center; gap: 12px;
-      margin: 20px 0;
+      display: flex; align-items: center; gap: 10px;
+      margin: 14px 0;
     }
-    .divider-line { flex: 1; height: 1px; background: #ccc; }
-    .divider-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(59,59,142,0.35); }
+    .divider-line { flex: 1; height: 1px; background: #d1d5db; }
+    .divider-dot  { width: 5px; height: 5px; border-radius: 50%; background: #3B3B8E; opacity: 0.35; }
 
-    /* CONTENIDO CON IMAGEN */
-    .contenido-wrap { margin-bottom: 20px; overflow: hidden; }
+    /* ── CONTENIDO (float image) ── */
+    .contenido-wrap { margin-bottom: 18px; overflow: hidden; }
     .contenido-img {
-      float: right; margin-left: 16px; margin-bottom: 8px;
-      width: 190px; height: 190px; object-fit: cover;
-      border-radius: 12px;
-    }
-    .contenido p {
-      font-family: 'Lora', Georgia, serif;
-      font-size: 14px; line-height: 1.9;
-      color: #222; text-align: justify;
+      float: right;
+      margin-left: 14px;
       margin-bottom: 8px;
+      width: 185px;
+      height: 185px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .contenido-wrap p {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 13.5px;
+      line-height: 1.85;
+      color: #222;
+      text-align: justify;
+      margin-bottom: 7px;
     }
     .clearfix::after { content: ''; display: table; clear: both; }
 
-    /* INTERCAMBIEMOS IDEAS */
-    .ideas-titulo {
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 10px;
+    /* ── INTERCAMBIEMOS IDEAS ── */
+    .ideas-heading {
+      font-size: 15px;
+      font-weight: 800;
+      color: #F7941D;
+      margin-bottom: 8px;
+      margin-top: 4px;
+      font-family: 'Inter', sans-serif;
     }
-    .ideas-titulo h3 {
-      font-size: 15px; font-weight: 800; color: #F7941D;
+    .ideas-wrap { overflow: hidden; margin-bottom: 16px; }
+    .ideas-img {
+      float: right;
+      margin-left: 14px;
+      margin-bottom: 8px;
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
     }
-    .ideas {
+    .ideas-texto {
       font-family: 'Lora', Georgia, serif;
-      font-size: 14px; line-height: 1.9;
-      color: #333; white-space: pre-wrap; margin-bottom: 20px;
+      font-size: 13.5px;
+      line-height: 1.85;
+      color: #333;
+      white-space: pre-wrap;
     }
 
-    /* ORACIÓN */
-    .oracion-divider {
-      display: flex; align-items: center; gap: 12px; margin: 20px 0;
-    }
-    .oracion-divider-line { flex: 1; height: 1px; background: #ccc; }
-    .oracion-icon { font-size: 16px; }
-    .oracion {
+    /* ── ORACIÓN ── */
+    .oracion-texto {
       font-family: 'Lora', Georgia, serif;
-      font-size: 14px; line-height: 1.95;
-      color: #444; font-style: italic;
-      white-space: pre-wrap; margin-bottom: 20px;
+      font-size: 13.5px;
+      line-height: 1.9;
+      color: #333;
+      white-space: pre-wrap;
+      margin-bottom: 20px;
     }
 
-    /* CIERRE */
+    /* ── CIERRE ── */
     .cierre {
-      text-align: center; font-weight: 800; font-size: 15px;
-      color: #F7941D; margin-top: 16px;
+      text-align: center;
+      font-weight: 900;
+      font-size: 15px;
+      color: #F7941D;
+      margin-top: 18px;
+      font-family: 'Inter', sans-serif;
     }
 
+    /* ── PRINT ── */
     @media print {
       .toolbar { display: none !important; }
-      body { padding: 0; background: #F7F2EA; }
-      @page { size: A4; margin: 18mm; background: #F7F2EA; }
+      body { padding: 0; background: #fff; }
+      @page { size: A4; margin: 16mm; background: #fff; }
     }
   </style>
 </head>
@@ -194,89 +306,87 @@ export async function GET() {
   </div>
 
   <div class="page">
-    <!-- HEADER -->
+
+    <!-- ══ ENCABEZADO ══ -->
     <div class="header">
-      <div class="logo">
-        <span class="casas">Casas</span>
-        <span class="de">de</span>
-        <span class="vida">VIDA</span>
+      <div class="header-logo-left">
+        <img src="/logo-casasvida.png.png" alt="Logo" />
       </div>
-      <div class="header-right">
-        ${d.semana ? `<div class="semana">Semana ${escHtml(d.semana)}</div>` : ''}
-        <div class="tipo-label">${escHtml(tipo)}</div>
+      <div class="header-center">
+        <div class="iglesia">Centro Cristiano Misión Global<br/>"San Cristóbal"</div>
+        <div class="depto">Departamento de Familia</div>
+        <div class="casas">Casas de Vida Familiar</div>
+      </div>
+      <div class="header-logo-right">
+        <img src="/logo-casasvida.png.png" alt="Logo" />
       </div>
     </div>
 
-    <!-- SERIE + TÍTULO -->
-    ${d.serie ? `<p class="serie">Serie: ${escHtml(d.serie)}</p>` : ''}
+    <!-- ══ META INFO ══ -->
+    <div class="meta-info">
+      ${d.serie ? `<span>Serie: ${escHtml(d.serie)}</span>` : ''}
+      ${d.semana ? `<span>Semana: ${escHtml(d.semana)}</span>` : ''}
+      <span class="tipo-badge">${escHtml(tipo)}</span>
+    </div>
+
+    <!-- ══ TÍTULO ══ -->
     <div class="titulo-box">
       <h1>${escHtml(d.titulo)}</h1>
     </div>
 
-    <!-- A) LEAMOS JUNTOS -->
-    <div class="seccion-titulo">
-      <span class="seccion-emoji">📖</span>
-      <h2>A) Leamos Juntos</h2>
-    </div>
+    <!-- ══ A) LEAMOS JUNTOS ══ -->
+    <div class="seccion-titulo">A) Leamos Juntos:</div>
 
     ${d.pasaje ? `
-    <blockquote>
-      <span class="quote-mark">&ldquo;</span>
-      <p>${escHtml(d.pasaje)}</p>
-      ${d.referencia ? `<footer>${escHtml(d.referencia)}</footer>` : ''}
-    </blockquote>
+    <div class="versiculo-box">
+      <div class="versiculo-texto">${escHtml(d.pasaje)}</div>
+      ${d.referencia ? `<div class="versiculo-ref">${escHtml(d.referencia)}</div>` : ''}
+    </div>
     ` : ''}
 
-    ${d.introduccion ? `<p class="introduccion">${escHtml(d.introduccion)}</p>` : ''}
+    ${d.introduccion ? `<div class="introduccion">${escHtml(d.introduccion)}</div>` : ''}
 
-    <!-- DIVISOR -->
+    <!-- divisor -->
     <div class="divider">
       <div class="divider-line"></div>
       <div class="divider-dot"></div>
       <div class="divider-line"></div>
     </div>
 
-    <!-- B) APRENDEMOS EN FAMILIA -->
-    <div class="seccion-titulo">
-      <span class="seccion-emoji">👨‍👩‍👧‍👦</span>
-      <h2>B) Aprendemos en Familia la verdad de Dios</h2>
-    </div>
+    <!-- ══ B) APRENDEMOS EN FAMILIA ══ -->
+    <div class="seccion-titulo">B) Aprendemos en Familia la verdad de Dios:</div>
 
-    ${d.contenido ? `
+    ${contenidoParrafos.length > 0 ? `
     <div class="contenido-wrap clearfix">
       ${d.imagen_url ? `<img class="contenido-img" src="${d.imagen_url}" alt="Ilustración" />` : ''}
-      <div class="contenido">
-        ${d.contenido.split('\n').filter((l: string) => l.trim()).map((l: string) => `<p>${escHtml(l)}</p>`).join('')}
-      </div>
+      ${contenidoParrafos.map(p => `<p>${escHtml(p)}</p>`).join('')}
     </div>
     ` : ''}
 
-    <!-- INTERCAMBIEMOS IDEAS -->
+    <!-- ══ INTERCAMBIEMOS IDEAS ══ -->
     ${d.intercambiemos_ideas ? `
-    <div class="ideas-titulo">
-      <span class="seccion-emoji">💡</span>
-      <h3>Intercambiemos ideas:</h3>
+    <div class="ideas-heading">Intercambiemos ideas:</div>
+    <div class="ideas-wrap clearfix">
+      <img class="ideas-img" src="/Intercambiemos_ideas.png" alt="" />
+      <div class="ideas-texto">${escHtml(d.intercambiemos_ideas)}</div>
     </div>
-    <div class="ideas">${escHtml(d.intercambiemos_ideas)}</div>
     ` : ''}
 
-    <!-- DIVISOR -->
+    <!-- divisor -->
     <div class="divider">
       <div class="divider-line"></div>
       <div class="divider-dot"></div>
       <div class="divider-line"></div>
     </div>
 
-    <!-- C) ORACIÓN -->
-    <div class="seccion-titulo">
-      <span class="seccion-emoji">🙏</span>
-      <h2>C) Tomamos tiempo para agradecer y orar</h2>
-    </div>
+    <!-- ══ C) ORACIÓN ══ -->
+    <div class="seccion-titulo">C) Tomamos tiempo para agradecer y orar:</div>
 
-    ${d.oracion ? `<div class="oracion">${escHtml(d.oracion)}</div>` : ''}
+    ${d.oracion ? `<div class="oracion-texto">${escHtml(d.oracion)}</div>` : ''}
 
-    <!-- CIERRE -->
+    <!-- ══ CIERRE ══ -->
     <p class="cierre">¡Yo y mi Casa Serviremos al Señor!</p>
+
   </div>
 </body>
 </html>`
