@@ -8,6 +8,7 @@ const ORANGE  = '#F7941D'
 const LIGHT   = '#EBEBF8'
 
 function totalParticiparon(r: any) {
+  if (!r) return 0
   if (r.adultos != null || r.ninos != null) return (r.adultos ?? 0) + (r.ninos ?? 0)
   return r.personas_participaron ?? 0
 }
