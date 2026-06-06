@@ -64,7 +64,7 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
         <KPI icon="👥" label="Personas alcanzadas" value={String(totalPersonas)}
           sub={`${totalAdultos} adultos · ${totalNinos} niños`} accent={ORANGE} />
         <KPI icon="📊" label="Promedio / familia" value={String(promedio)}
-          sub="personas por hogar" accent={PRIMARY} />
+          sub="personas por hogar" accent={PRIMARY} span={!verEconomico} />
         {verEconomico && (
           <KPI icon="💛" label="Ofrenda semana"
             value={totalOfrenda > 0 ? `${simbolo}${totalOfrenda.toLocaleString()}` : '—'}
@@ -232,11 +232,11 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
 
 /* ── Componentes auxiliares ── */
 
-function KPI({ icon, label, value, sub, accent }: {
-  icon: string; label: string; value: string; sub: string; accent: string
+function KPI({ icon, label, value, sub, accent, span }: {
+  icon: string; label: string; value: string; sub: string; accent: string; span?: boolean
 }) {
   return (
-    <div className="card py-4">
+    <div className={`card py-4 ${span ? 'col-span-2' : ''}`}>
       <div className="flex items-center gap-1.5 mb-2">
         <span className="text-base">{icon}</span>
         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide leading-tight">{label}</p>
