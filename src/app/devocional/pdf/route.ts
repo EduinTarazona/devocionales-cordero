@@ -116,14 +116,6 @@ export async function GET() {
     .header-logo-right {
       width: 56px;
       flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .header-logo-right img {
-      width: 52px;
-      height: auto;
-      object-fit: contain;
     }
 
     /* ── META INFO (serie/bosquejo/semana) ── */
@@ -317,9 +309,7 @@ export async function GET() {
         <div class="depto">Departamento de Familia</div>
         <div class="casas">Casas de Vida Familiar</div>
       </div>
-      <div class="header-logo-right">
-        <img src="/logo-casasvida.png.png" alt="Logo" />
-      </div>
+      <div class="header-logo-right"></div>
     </div>
 
     <!-- ══ META INFO ══ -->
