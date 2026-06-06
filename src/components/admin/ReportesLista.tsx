@@ -58,13 +58,13 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
     <div className="space-y-4 pb-6">
 
       {/* ── KPI Cards ── */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className={`grid gap-3 ${verEconomico ? 'grid-cols-2' : 'grid-cols-3'}`}>
         <KPI icon="🏠" label="Familias" value={`${reportes.length}/${totalMiembros}`}
           sub={`${pct}% participación`} accent={PRIMARY} />
         <KPI icon="👥" label="Personas alcanzadas" value={String(totalPersonas)}
           sub={`${totalAdultos} adultos · ${totalNinos} niños`} accent={ORANGE} />
         <KPI icon="📊" label="Promedio / familia" value={String(promedio)}
-          sub="personas por hogar" accent={PRIMARY} span={!verEconomico} />
+          sub="personas por hogar" accent={PRIMARY} />
         {verEconomico && (
           <KPI icon="💛" label="Ofrenda semana"
             value={totalOfrenda > 0 ? `${simbolo}${totalOfrenda.toLocaleString()}` : '—'}
@@ -232,11 +232,11 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
 
 /* ── Componentes auxiliares ── */
 
-function KPI({ icon, label, value, sub, accent, span }: {
-  icon: string; label: string; value: string; sub: string; accent: string; span?: boolean
+function KPI({ icon, label, value, sub, accent }: {
+  icon: string; label: string; value: string; sub: string; accent: string
 }) {
   return (
-    <div className={`card py-4 ${span ? 'col-span-2' : ''}`}>
+    <div className="card py-4">
       <div className="flex items-center gap-1.5 mb-2">
         <span className="text-base">{icon}</span>
         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide leading-tight">{label}</p>
