@@ -57,7 +57,7 @@ export async function GET() {
     /* HEADER */
     .header {
       display: flex; justify-content: space-between; align-items: flex-end;
-      border-bottom: 2px solid #3B3B8E; padding-bottom: 14px; margin-bottom: 28px;
+      border-bottom: 2px solid #3B3B8E; padding-bottom: 14px; margin-bottom: 24px;
     }
     .logo { line-height: 1.1; }
     .logo .casas { font-size: 20px; font-weight: 800; color: #3B3B8E; }
@@ -67,60 +67,103 @@ export async function GET() {
     .semana { font-size: 12px; font-weight: 700; color: #333; }
     .tipo-label { font-size: 13px; font-weight: 700; color: #F7941D; font-style: italic; }
 
+    /* SERIE */
+    .serie { font-size: 11px; font-weight: 600; color: #888; text-align: center; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
     /* TÍTULO */
+    .titulo-box {
+      border: 2px solid #3B3B8E; border-radius: 12px;
+      padding: 14px 20px; text-align: center; margin-bottom: 24px;
+      background: #fff;
+    }
     h1 {
-      font-size: 30px; font-weight: 800; line-height: 1.2;
-      color: #111; margin-bottom: 8px; text-align: center;
+      font-size: 26px; font-weight: 800; line-height: 1.2;
+      color: #3B3B8E;
     }
-    .referencia-clave {
-      text-align: center; font-size: 13px; font-weight: 600;
-      color: #444; margin-bottom: 20px;
+
+    /* SECCIÓN TÍTULO */
+    .seccion-titulo {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 14px; margin-top: 4px;
     }
+    .seccion-titulo h2 {
+      font-size: 17px; font-weight: 800; color: #3B3B8E;
+    }
+    .seccion-emoji { font-size: 18px; }
 
     /* VERSÍCULO */
     blockquote {
-      margin: 20px 0 28px;
+      margin: 0 0 16px;
       padding: 0 0 0 18px;
-      border-left: 3px solid #3B3B8E;
+      border-left: 3px solid rgba(59,59,142,0.4);
       position: relative;
     }
     .quote-mark {
       font-family: 'Lora', Georgia, serif;
       font-size: 72px; line-height: 0.8;
-      color: rgba(59,59,142,0.12);
+      color: rgba(59,59,142,0.10);
       position: absolute; top: -4px; left: -8px;
-      pointer-events: none; select: none;
+      pointer-events: none;
     }
     blockquote p {
       font-family: 'Lora', Georgia, serif;
-      font-size: 16px; font-style: italic; line-height: 1.8;
-      color: #222; position: relative;
+      font-size: 16px; font-weight: 700; line-height: 1.8;
+      color: #222; position: relative; text-align: center;
     }
     blockquote footer {
       font-family: 'Inter', sans-serif;
       font-size: 12px; font-weight: 700;
-      color: #3B3B8E; margin-top: 10px; letter-spacing: 0.5px;
+      color: #3B3B8E; margin-top: 10px; letter-spacing: 0.5px; text-align: center;
+    }
+
+    /* INTRODUCCIÓN */
+    .introduccion {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 14px; line-height: 1.9;
+      color: #444; margin-bottom: 20px;
+      white-space: pre-wrap;
     }
 
     /* DIVISOR */
     .divider {
       display: flex; align-items: center; gap: 12px;
-      margin: 24px 0;
+      margin: 20px 0;
     }
     .divider-line { flex: 1; height: 1px; background: #ccc; }
     .divider-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(59,59,142,0.35); }
 
-    /* CONTENIDO */
-    .contenido {
+    /* CONTENIDO CON IMAGEN */
+    .contenido-wrap { margin-bottom: 20px; overflow: hidden; }
+    .contenido-img {
+      float: right; margin-left: 16px; margin-bottom: 8px;
+      width: 190px; height: 190px; object-fit: cover;
+      border-radius: 12px;
+    }
+    .contenido p {
       font-family: 'Lora', Georgia, serif;
-      font-size: 14.5px; line-height: 1.95;
+      font-size: 14px; line-height: 1.9;
       color: #222; text-align: justify;
-      white-space: pre-wrap; margin-bottom: 28px;
+      margin-bottom: 8px;
+    }
+    .clearfix::after { content: ''; display: table; clear: both; }
+
+    /* INTERCAMBIEMOS IDEAS */
+    .ideas-titulo {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px;
+    }
+    .ideas-titulo h3 {
+      font-size: 15px; font-weight: 800; color: #F7941D;
+    }
+    .ideas {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 14px; line-height: 1.9;
+      color: #333; white-space: pre-wrap; margin-bottom: 20px;
     }
 
     /* ORACIÓN */
     .oracion-divider {
-      display: flex; align-items: center; gap: 12px; margin: 24px 0;
+      display: flex; align-items: center; gap: 12px; margin: 20px 0;
     }
     .oracion-divider-line { flex: 1; height: 1px; background: #ccc; }
     .oracion-icon { font-size: 16px; }
@@ -128,7 +171,13 @@ export async function GET() {
       font-family: 'Lora', Georgia, serif;
       font-size: 14px; line-height: 1.95;
       color: #444; font-style: italic;
-      white-space: pre-wrap;
+      white-space: pre-wrap; margin-bottom: 20px;
+    }
+
+    /* CIERRE */
+    .cierre {
+      text-align: center; font-weight: 800; font-size: 15px;
+      color: #F7941D; margin-top: 16px;
     }
 
     @media print {
@@ -158,17 +207,57 @@ export async function GET() {
       </div>
     </div>
 
-    <!-- TÍTULO -->
-    <h1>${escHtml(d.titulo)}</h1>
-    ${d.referencia ? `<p class="referencia-clave">Cita clave ${escHtml(d.referencia)}</p>` : ''}
+    <!-- SERIE + TÍTULO -->
+    ${d.serie ? `<p class="serie">Serie: ${escHtml(d.serie)}</p>` : ''}
+    <div class="titulo-box">
+      <h1>${escHtml(d.titulo)}</h1>
+    </div>
 
-    <!-- VERSÍCULO -->
+    <!-- A) LEAMOS JUNTOS -->
+    <div class="seccion-titulo">
+      <span class="seccion-emoji">📖</span>
+      <h2>A) Leamos Juntos</h2>
+    </div>
+
     ${d.pasaje ? `
     <blockquote>
       <span class="quote-mark">&ldquo;</span>
       <p>${escHtml(d.pasaje)}</p>
       ${d.referencia ? `<footer>${escHtml(d.referencia)}</footer>` : ''}
     </blockquote>
+    ` : ''}
+
+    ${d.introduccion ? `<p class="introduccion">${escHtml(d.introduccion)}</p>` : ''}
+
+    <!-- DIVISOR -->
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-dot"></div>
+      <div class="divider-line"></div>
+    </div>
+
+    <!-- B) APRENDEMOS EN FAMILIA -->
+    <div class="seccion-titulo">
+      <span class="seccion-emoji">👨‍👩‍👧‍👦</span>
+      <h2>B) Aprendemos en Familia la verdad de Dios</h2>
+    </div>
+
+    ${d.contenido ? `
+    <div class="contenido-wrap clearfix">
+      ${d.imagen_url ? `<img class="contenido-img" src="${d.imagen_url}" alt="Ilustración" />` : ''}
+      <div class="contenido">
+        ${d.contenido.split('\n').filter((l: string) => l.trim()).map((l: string) => `<p>${escHtml(l)}</p>`).join('')}
+      </div>
+    </div>
+    ` : ''}
+
+    <!-- INTERCAMBIEMOS IDEAS -->
+    ${d.intercambiemos_ideas ? `
+    <div class="ideas-titulo">
+      <span class="seccion-emoji">💡</span>
+      <h3>Intercambiemos ideas:</h3>
+    </div>
+    <div class="ideas">${escHtml(d.intercambiemos_ideas)}</div>
     ` : ''}
 
     <!-- DIVISOR -->
@@ -178,18 +267,16 @@ export async function GET() {
       <div class="divider-line"></div>
     </div>
 
-    <!-- CONTENIDO -->
-    ${d.contenido ? `<div class="contenido">${escHtml(d.contenido)}</div>` : ''}
-
-    <!-- ORACIÓN -->
-    ${d.oracion ? `
-    <div class="oracion-divider">
-      <div class="oracion-divider-line"></div>
-      <span class="oracion-icon">🕊️</span>
-      <div class="oracion-divider-line"></div>
+    <!-- C) ORACIÓN -->
+    <div class="seccion-titulo">
+      <span class="seccion-emoji">🙏</span>
+      <h2>C) Tomamos tiempo para agradecer y orar</h2>
     </div>
-    <div class="oracion">${escHtml(d.oracion)}</div>
-    ` : ''}
+
+    ${d.oracion ? `<div class="oracion">${escHtml(d.oracion)}</div>` : ''}
+
+    <!-- CIERRE -->
+    <p class="cierre">¡Yo y mi Casa Serviremos al Señor!</p>
   </div>
 </body>
 </html>`
