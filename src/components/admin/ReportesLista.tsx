@@ -38,7 +38,7 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
   const barData = [...reportes]
     .sort((a, b) => totalParticiparon(b) - totalParticiparon(a))
     .slice(0, 8)
-  const maxPersonas = totalParticiparon(barData[0]) || 1
+  const maxPersonas = barData.length > 0 ? (totalParticiparon(barData[0]) || 1) : 1
 
   // Actividad por día
   const diasMap: Record<string, number> = {}
