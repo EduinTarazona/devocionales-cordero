@@ -41,17 +41,15 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
   inicioMes.setHours(0, 0, 0, 0)
 
   // Pastor de red: solo reportes de su red
-  let queryReportes = supabase
+  const baseQuery = supabase
     .from('reportes')
     .select('*, perfiles(nombre, email)')
     .gte('created_at', inicioSemana.toISOString())
     .order('created_at', { ascending: false })
 
-  if (rol === 'pastor_red' && redAsignada) {
-    queryReportes = queryReportes.eq('red', redAsignada) as any
-  }
-
-  const { data: reportesSemana } = await queryReportes
+  const { data: reportesSemana } = rol === 'pastor_red' && redAsignada
+    ? await baseQuery.eq('red', redAsignada)
+    : await baseQuery
 
   const { data: reportesMes } = await supabase
     .from('reportes')
