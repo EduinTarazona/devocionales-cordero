@@ -3,11 +3,21 @@ import { useState } from 'react'
 import ReporteModal from './ReporteModal'
 import AppShell from '../AppShell'
 
+type MiReporte = {
+  id: string
+  adultos: number | null
+  ninos: number | null
+  hubo_ofrenda: boolean | null
+  monto_ofrenda: number | null
+  moneda_ofrenda: string | null
+} | null
+
 type Props = {
   user: { id: string; email: string; nombre?: string }
   rol: string
   devocional: any
   yaReporto: boolean
+  miReporte?: MiReporte
 }
 
 const TIPOS = [
@@ -65,9 +75,10 @@ const iconoManos = (
   </svg>
 )
 
-export default function DevocionalView({ user, rol, devocional, yaReporto }: Props) {
+export default function DevocionalView({ user, rol, devocional, yaReporto, miReporte }: Props) {
   const [modalAbierto, setModalAbierto] = useState(false)
   const [reporteEnviado, setReporteEnviado] = useState(yaReporto)
+  const [reporteData, setReporteData] = useState<MiReporte>(miReporte ?? null)
 
   if (!devocional) {
     return (
@@ -229,10 +240,31 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
 
           {/* Botón reporte */}
           {reporteEnviado ? (
-            <div className="rounded-2xl border-2 border-teal bg-white text-center py-7 space-y-1 shadow-sm mb-6">
+            <div className="rounded-2xl border-2 border-teal bg-white text-center py-6 space-y-2 shadow-sm mb-6 px-5">
               <div className="text-4xl mb-1">✅</div>
               <p className="font-bold text-teal text-base">¡Ya reportaste esta semana!</p>
               <p className="text-xs text-gray-400">Gracias por participar con tu familia</p>
+              {reporteData && (
+                <div className="mt-3 pt-3 border-t border-gray-100 space-y-1 text-sm text-gray-600">
+                  {(reporteData.adultos != null || reporteData.ninos != null) && (
+                    <p>
+                      👨‍👩‍👧 <span className="font-semibold">{(reporteData.adultos ?? 0) + (reporteData.ninos ?? 0)}</span> personas
+                      &nbsp;·&nbsp; {reporteData.adultos ?? 0} adultos &nbsp;·&nbsp; {reporteData.ninos ?? 0} niños
+                    </p>
+                  )}
+                  {reporteData.hubo_ofrenda ? (
+                    <p>
+                      💛 Ofrenda: <span className="font-semibold text-orange-500">
+                        {reporteData.monto_ofrenda
+                          ? `${reporteData.moneda_ofrenda === 'Bs' ? 'Bs.' : '$'}${reporteData.monto_ofrenda.toLocaleString()} ${reporteData.moneda_ofrenda ?? 'USD'}`
+                          : 'Sí'}
+                      </span>
+                    </p>
+                  ) : (
+                    <p className="text-gray-400 text-xs">Sin ofrenda registrada</p>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <button
@@ -281,7 +313,11 @@ export default function DevocionalView({ user, rol, devocional, yaReporto }: Pro
           devocionalId={devocional.id}
           userId={user.id}
           onClose={() => setModalAbierto(false)}
-          onSuccess={() => { setReporteEnviado(true); setModalAbierto(false) }}
+          onSuccess={(datos) => {
+            setReporteEnviado(true)
+            setModalAbierto(false)
+            if (datos) setReporteData(datos)
+          }}
         />
       )}
     </AppShell>

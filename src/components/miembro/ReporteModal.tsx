@@ -2,11 +2,19 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
+type DatosReporte = {
+  adultos: number | null
+  ninos: number | null
+  hubo_ofrenda: boolean | null
+  monto_ofrenda: number | null
+  moneda_ofrenda: string | null
+}
+
 type Props = {
   devocionalId: string
   userId: string
   onClose: () => void
-  onSuccess: () => void
+  onSuccess: (datos?: DatosReporte) => void
 }
 
 const MONEDAS = [
@@ -44,7 +52,13 @@ export default function ReporteModal({ devocionalId, userId, onClose, onSuccess 
     })
     setEnviando(false)
     if (error) { setError('Error al enviar el reporte. Intenta de nuevo.'); return }
-    onSuccess()
+    onSuccess({
+      adultos,
+      ninos,
+      hubo_ofrenda: huboOfrenda,
+      monto_ofrenda: huboOfrenda && montoOfrenda ? parseFloat(montoOfrenda) : null,
+      moneda_ofrenda: huboOfrenda ? moneda : null,
+    })
   }
 
   const Contador = ({ label, value, onChange, min = 0 }: { label: string; value: number; onChange: (v: number) => void; min?: number }) => (

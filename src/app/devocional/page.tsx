@@ -21,7 +21,7 @@ export default async function DevocionalPage() {
   const { data: reporte } = devocional
     ? await supabase
         .from('reportes')
-        .select('id')
+        .select('id, adultos, ninos, hubo_ofrenda, monto_ofrenda, moneda_ofrenda')
         .eq('devocional_id', devocional.id)
         .eq('user_id', user.id)
         .maybeSingle()
@@ -33,6 +33,7 @@ export default async function DevocionalPage() {
       rol={rol}
       devocional={devocional}
       yaReporto={!!reporte}
+      miReporte={reporte ?? null}
     />
   )
 }
