@@ -81,11 +81,26 @@ const ITEMS_MIEMBRO: Item[] = [
   { href: '/historial', label: 'Mi historial', icon: iconClock, match: p => p.startsWith('/historial') },
 ]
 
+// Admin, Pastor General, Plan de Vida — acceso total
 const ITEMS_ADMIN: Item[] = [
   { href: '/admin', label: 'Resumen', icon: iconChart, match: (p, q) => p === '/admin' && !q.get('vista') && !q.get('preview_rol') },
   { href: '/admin?vista=nuevo', label: 'Publicar devocional', icon: iconPlus, match: (p, q) => p === '/admin' && q.get('vista') === 'nuevo' },
   { href: '/admin?vista=reportes', label: 'Reportes', icon: iconList, match: (p, q) => p === '/admin' && q.get('vista') === 'reportes' },
   { href: '/admin?vista=usuarios', label: 'Usuarios', icon: iconUsers, match: (p, q) => p === '/admin' && q.get('vista') === 'usuarios' },
+  { href: '/historial', label: 'Mi historial', icon: iconClock, match: p => p.startsWith('/historial') },
+]
+
+// Pastor Supervisor — sin publicar ni usuarios
+const ITEMS_SUPERVISOR: Item[] = [
+  { href: '/admin', label: 'Resumen', icon: iconChart, match: (p, q) => p === '/admin' && !q.get('vista') },
+  { href: '/admin?vista=reportes', label: 'Reportes', icon: iconList, match: (p, q) => p === '/admin' && q.get('vista') === 'reportes' },
+  { href: '/historial', label: 'Mi historial', icon: iconClock, match: p => p.startsWith('/historial') },
+]
+
+// Pastor de Red — solo su red
+const ITEMS_PASTOR_RED: Item[] = [
+  { href: '/admin', label: 'Resumen', icon: iconChart, match: (p, q) => p === '/admin' && !q.get('vista') },
+  { href: '/admin?vista=reportes', label: 'Reportes de mi red', icon: iconList, match: (p, q) => p === '/admin' && q.get('vista') === 'reportes' },
   { href: '/historial', label: 'Mi historial', icon: iconClock, match: p => p.startsWith('/historial') },
 ]
 
@@ -108,9 +123,17 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
   const [previewAbierto, setPreviewAbierto] = useState(false)
   const rolesAdmin = ['admin', 'pastor', 'pastor_general', 'plan_de_vida', 'pastor_supervisor', 'pastor_red']
   const esAdmin = rolesAdmin.includes(rol)
-  const items = esAdmin ? ITEMS_ADMIN : ITEMS_MIEMBRO
+  const esAccesoTotal = ['admin', 'pastor', 'pastor_general', 'plan_de_vida'].includes(rol)
   const params = new URLSearchParams(currentSearch)
   const previewActivo = params.get('preview_rol')
+
+  function getItems() {
+    if (!esAdmin) return ITEMS_MIEMBRO
+    if (rol === 'pastor_red') return ITEMS_PASTOR_RED
+    if (rol === 'pastor_supervisor') return ITEMS_SUPERVISOR
+    return ITEMS_ADMIN
+  }
+  const items = getItems()
 
   async function cerrarSesion() {
     await supabase.auth.signOut()
@@ -153,8 +176,8 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
           )
         })}
 
-        {/* Vista previa como... */}
-        {esAdmin && (
+        {/* Vista previa como... — solo para roles con acceso total */}
+        {esAccesoTotal && (
           <div>
             <button
               onClick={() => setPreviewAbierto(v => !v)}
