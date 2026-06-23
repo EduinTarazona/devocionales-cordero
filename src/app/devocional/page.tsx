@@ -3,12 +3,18 @@ import { redirect } from 'next/navigation'
 import DevocionalView from '@/components/miembro/DevocionalView'
 import { getMyRole } from '@/lib/auth/role'
 
-export default async function DevocionalPage() {
+const ROLES_PREVIEW_VALIDOS = ['miembro', 'pastor_red', 'pastor_supervisor', 'pastor_general', 'plan_de_vida']
+
+export default async function DevocionalPage({ searchParams }: { searchParams?: { preview_rol?: string } }) {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const rol = await getMyRole(supabase, user.id)
+  const rolReal = await getMyRole(supabase, user.id)
+  const previewRol = searchParams?.preview_rol && ROLES_PREVIEW_VALIDOS.includes(searchParams.preview_rol)
+    ? searchParams.preview_rol
+    : null
+  const rol = previewRol ?? rolReal
 
   const { data: devocional } = await supabase
     .from('devocionales')
@@ -34,6 +40,7 @@ export default async function DevocionalPage() {
       devocional={devocional}
       yaReporto={!!reporte}
       miReporte={reporte ?? null}
+      previewRol={previewRol}
     />
   )
 }

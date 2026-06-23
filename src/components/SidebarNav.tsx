@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { displayRol } from '@/lib/roles'
 import type { ReactNode } from 'react'
@@ -81,12 +82,18 @@ const ITEMS_MIEMBRO: Item[] = [
 ]
 
 const ITEMS_ADMIN: Item[] = [
-  { href: '/admin', label: 'Resumen', icon: iconChart, match: (p, q) => p === '/admin' && !q.get('vista') },
+  { href: '/admin', label: 'Resumen', icon: iconChart, match: (p, q) => p === '/admin' && !q.get('vista') && !q.get('preview_rol') },
   { href: '/admin?vista=nuevo', label: 'Publicar devocional', icon: iconPlus, match: (p, q) => p === '/admin' && q.get('vista') === 'nuevo' },
   { href: '/admin?vista=reportes', label: 'Reportes', icon: iconList, match: (p, q) => p === '/admin' && q.get('vista') === 'reportes' },
   { href: '/admin?vista=usuarios', label: 'Usuarios', icon: iconUsers, match: (p, q) => p === '/admin' && q.get('vista') === 'usuarios' },
-  { href: '/devocional', label: 'Ver como miembro', icon: iconEye, match: p => p === '/devocional' },
   { href: '/historial', label: 'Mi historial', icon: iconClock, match: p => p.startsWith('/historial') },
+]
+
+const PREVIEW_ROLES = [
+  { rol: 'miembro', label: 'Miembro', href: '/devocional?preview_rol=miembro' },
+  { rol: 'pastor_red', label: 'Pastor de Red', href: '/admin?preview_rol=pastor_red' },
+  { rol: 'pastor_supervisor', label: 'Pastor Supervisor', href: '/admin?preview_rol=pastor_supervisor' },
+  { rol: 'pastor_general', label: 'Pastor General', href: '/admin?preview_rol=pastor_general' },
 ]
 
 function iniciales(nombre: string | undefined, email: string): string {
@@ -98,10 +105,12 @@ function iniciales(nombre: string | undefined, email: string): string {
 
 export default function SidebarNav({ user, rol, currentPath, currentSearch, onNavigate }: Props) {
   const supabase = createClient()
+  const [previewAbierto, setPreviewAbierto] = useState(false)
   const rolesAdmin = ['admin', 'pastor', 'pastor_general', 'plan_de_vida', 'pastor_supervisor', 'pastor_red']
   const esAdmin = rolesAdmin.includes(rol)
   const items = esAdmin ? ITEMS_ADMIN : ITEMS_MIEMBRO
   const params = new URLSearchParams(currentSearch)
+  const previewActivo = params.get('preview_rol')
 
   async function cerrarSesion() {
     await supabase.auth.signOut()
@@ -143,6 +152,45 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
             </a>
           )
         })}
+
+        {/* Vista previa como... */}
+        {esAdmin && (
+          <div>
+            <button
+              onClick={() => setPreviewAbierto(v => !v)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors
+                ${previewActivo
+                  ? 'text-white font-semibold shadow-sm'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'}`}
+              style={previewActivo ? { background: 'linear-gradient(90deg, #3B3B8E, #F7941D)' } : {}}
+            >
+              <span className="flex-shrink-0">{iconEye}</span>
+              <span className="truncate flex-1 text-left">Vista previa como...</span>
+              <span className="text-xs opacity-60">{previewAbierto ? '▲' : '▼'}</span>
+            </button>
+            {previewAbierto && (
+              <div className="ml-4 mt-1 space-y-0.5">
+                {PREVIEW_ROLES.map(item => {
+                  const activo = previewActivo === item.rol
+                  return (
+                    <a
+                      key={item.rol}
+                      href={item.href}
+                      onClick={() => onNavigate?.()}
+                      className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-colors
+                        ${activo
+                          ? 'text-primary font-semibold bg-primary/5'
+                          : 'text-gray-400 hover:bg-gray-50 hover:text-gray-700'}`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${activo ? 'bg-primary' : 'bg-gray-300'}`} />
+                      {item.label}
+                    </a>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </nav>
 
       {/* Usuario + logout */}

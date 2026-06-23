@@ -4,7 +4,9 @@ import AdminDashboard from '@/components/admin/AdminDashboard'
 import { getMyRole } from '@/lib/auth/role'
 import { esAdmin } from '@/lib/roles'
 
-export default async function AdminPage({ searchParams }: { searchParams: { vista?: string } }) {
+const ROLES_PREVIEW_VALIDOS = ['miembro', 'pastor_red', 'pastor_supervisor', 'pastor_general', 'plan_de_vida']
+
+export default async function AdminPage({ searchParams }: { searchParams: { vista?: string; preview_rol?: string } }) {
   const vistaParam = searchParams?.vista
   const vista: 'resumen' | 'nuevo' | 'editar' | 'reportes' | 'usuarios' =
     vistaParam === 'nuevo' || vistaParam === 'editar' || vistaParam === 'reportes' || vistaParam === 'usuarios' ? vistaParam : 'resumen'
@@ -13,8 +15,13 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const rol = await getMyRole(supabase, user.id)
-  if (!esAdmin(rol)) redirect('/devocional')
+  const rolReal = await getMyRole(supabase, user.id)
+  if (!esAdmin(rolReal)) redirect('/devocional')
+
+  const previewRol = searchParams?.preview_rol && ROLES_PREVIEW_VALIDOS.includes(searchParams.preview_rol)
+    ? searchParams.preview_rol
+    : null
+  const rol = previewRol ?? rolReal
 
   // Obtener red asignada del pastor (para pastor_red)
   const { data: miPerfil } = await supabase
@@ -97,6 +104,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
       rol={rol}
       redAsignada={redAsignada}
       vista={vista}
+      previewRol={previewRol}
     />
   )
 }

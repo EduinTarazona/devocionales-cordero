@@ -18,6 +18,7 @@ type Props = {
   devocional: any
   yaReporto: boolean
   miReporte?: MiReporte
+  previewRol?: string | null
 }
 
 const TIPOS = [
@@ -75,7 +76,7 @@ const iconoManos = (
   </svg>
 )
 
-export default function DevocionalView({ user, rol, devocional, yaReporto, miReporte }: Props) {
+export default function DevocionalView({ user, rol, devocional, yaReporto, miReporte, previewRol }: Props) {
   const [modalAbierto, setModalAbierto] = useState(false)
   const [reporteEnviado, setReporteEnviado] = useState(yaReporto)
   const [reporteData, setReporteData] = useState<MiReporte>(miReporte ?? null)
@@ -96,6 +97,15 @@ export default function DevocionalView({ user, rol, devocional, yaReporto, miRep
 
   return (
     <AppShell user={user} rol={rol} currentPath="/devocional" title="Devocional" subtitle="Esta semana">
+      {previewRol && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex items-center justify-between gap-3">
+          <p className="text-sm text-amber-800 font-medium">
+            Vista previa como: <span className="font-bold">Miembro</span>
+            <span className="font-normal text-amber-600 ml-2">— Esto es lo que ve un miembro</span>
+          </p>
+          <a href="/admin" className="text-xs text-amber-700 underline hover:text-amber-900">Salir</a>
+        </div>
+      )}
       <div className="min-h-screen" style={{ background: '#F5F0E8' }}>
         <div className="max-w-xl mx-auto px-5 py-8 pb-16">
 

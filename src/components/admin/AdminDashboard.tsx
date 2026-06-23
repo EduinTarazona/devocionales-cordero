@@ -19,6 +19,7 @@ type Props = {
   rol: string
   redAsignada?: string | null
   vista: Vista
+  previewRol?: string | null
 }
 
 const TITULO_VISTA: Record<Vista, string> = {
@@ -29,7 +30,7 @@ const TITULO_VISTA: Record<Vista, string> = {
   usuarios: 'Usuarios',
 }
 
-export default function AdminDashboard({ user, devocionalActivo, reportesSemana, totalMiembros, ofrendaMes, noReportaron, rol, redAsignada, vista }: Props) {
+export default function AdminDashboard({ user, devocionalActivo, reportesSemana, totalMiembros, ofrendaMes, noReportaron, rol, redAsignada, vista, previewRol }: Props) {
   const verEconomico = puedeVerEconomico(rol)
   const totalPersonas = reportesSemana.reduce((s, r) => s + (r.personas_participaron ?? 0), 0)
   const totalOfrenda = reportesSemana.filter(r => r.hubo_ofrenda).reduce((s, r) => s + (r.monto_ofrenda ?? 0), 0)
@@ -48,6 +49,15 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
       subtitle="Panel administrativo"
       actions={rolBadge}
     >
+      {previewRol && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex items-center justify-between gap-3">
+          <p className="text-sm text-amber-800 font-medium">
+            Vista previa como: <span className="font-bold">{displayRol(previewRol)}</span>
+            <span className="font-normal text-amber-600 ml-2">— Esto es lo que ve este rol</span>
+          </p>
+          <a href="/admin" className="text-xs text-amber-700 underline hover:text-amber-900">Salir</a>
+        </div>
+      )}
       <div className="max-w-5xl mx-auto px-4 md:px-6 py-6">
 
         {vista === 'resumen' && (
