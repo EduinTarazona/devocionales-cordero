@@ -159,10 +159,14 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
       <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
         {items.map(item => {
           const activo = item.match(currentPath, params)
+          // En modo preview, preservar el preview_rol en todos los links de admin
+          const href = previewActivo && item.href.startsWith('/admin')
+            ? `${item.href}${item.href.includes('?') ? '&' : '?'}preview_rol=${previewActivo}`
+            : item.href
           return (
             <a
               key={item.href + item.label}
-              href={item.href}
+              href={href}
               onClick={() => onNavigate?.()}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors
                           ${activo
