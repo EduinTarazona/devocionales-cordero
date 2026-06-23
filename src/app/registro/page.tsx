@@ -11,6 +11,7 @@ export default function RegistroPage() {
     adultos: '',
     ninos: '',
     direccion: '',
+    telefono: '',
   })
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
@@ -40,6 +41,7 @@ export default function RegistroPage() {
         adultos: parseInt(form.adultos) || 0,
         ninos: parseInt(form.ninos) || 0,
         direccion: form.direccion.trim(),
+        telefono: form.telefono.trim() || null,
         perfil_completo: true,
       })
       .eq('id', user.id)
@@ -96,6 +98,14 @@ export default function RegistroPage() {
                 placeholder="Ej: Chacón Márquez"
                 value={form.apellidos_familia}
                 onChange={handle}
+              />
+              <Campo
+                label="Teléfono"
+                name="telefono"
+                placeholder="Ej: 0414-1234567"
+                value={form.telefono}
+                onChange={handle}
+                type="tel"
               />
             </div>
           </div>

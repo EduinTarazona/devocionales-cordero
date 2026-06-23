@@ -56,6 +56,12 @@ const iconUsers = (
     <path d="M16 3.13a4 4 0 0 1 0 7.75" />
   </svg>
 )
+const iconHome = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+    <path d="M9 21V12h6v9" />
+  </svg>
+)
 const iconEye = (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -87,6 +93,7 @@ const ITEMS_ADMIN: Item[] = [
   { href: '/admin?vista=nuevo', label: 'Publicar devocional', icon: iconPlus, match: (p, q) => p === '/admin' && q.get('vista') === 'nuevo' },
   { href: '/admin?vista=reportes', label: 'Reportes', icon: iconList, match: (p, q) => p === '/admin' && q.get('vista') === 'reportes' },
   { href: '/admin?vista=usuarios', label: 'Usuarios', icon: iconUsers, match: (p, q) => p === '/admin' && q.get('vista') === 'usuarios' },
+  { href: '/directorio', label: 'Directorio', icon: iconHome, match: p => p.startsWith('/directorio') },
   { href: '/historial', label: 'Mi historial', icon: iconClock, match: p => p.startsWith('/historial') },
 ]
 
