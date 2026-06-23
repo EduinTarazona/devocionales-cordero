@@ -1,7 +1,7 @@
 'use client'
-import { puedeVerEconomico } from '@/lib/roles'
+import { puedeVerEconomico, esPastorRed } from '@/lib/roles'
 
-type Props = { reportes: any[]; totalMiembros: number; rol?: string }
+type Props = { reportes: any[]; totalMiembros: number; rol?: string; redAsignada?: string | null }
 
 const PRIMARY = '#3B3B8E'
 const ORANGE  = '#F7941D'
@@ -16,11 +16,13 @@ function totalParticiparon(r: any) {
 function simboloMoneda(moneda: string | null) {
   if (moneda === 'Bs') return 'Bs.'
   if (moneda === 'Pesos') return '$'
-  return '$' // USD por defecto
+  return '$'
 }
 
-export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }: Props) {
+export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', redAsignada }: Props) {
   const verEconomico = puedeVerEconomico(rol)
+  const esPastorDeRed = esPastorRed(rol)
+
   const totalPersonas   = reportes.reduce((s, r) => s + totalParticiparon(r), 0)
   const totalAdultos    = reportes.reduce((s, r) => s + (r.adultos ?? 0), 0)
   const totalNinos      = reportes.reduce((s, r) => s + (r.ninos ?? 0), 0)
@@ -30,10 +32,8 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
   const pct             = totalMiembros > 0 ? Math.round((reportes.length / totalMiembros) * 100) : 0
   const promedio        = reportes.length > 0 ? (totalPersonas / reportes.length).toFixed(1) : '—'
   const promedioOfrenda = conOfrenda.length > 0 ? Math.round(totalOfrenda / conOfrenda.length) : 0
-
-  // Moneda predominante para mostrar en totales
-  const monedaPred = conOfrenda.length > 0 ? (conOfrenda[0].moneda_ofrenda ?? 'USD') : 'USD'
-  const simbolo = simboloMoneda(monedaPred)
+  const monedaPred      = conOfrenda.length > 0 ? (conOfrenda[0].moneda_ofrenda ?? 'USD') : 'USD'
+  const simbolo         = simboloMoneda(monedaPred)
 
   // Barras: top 8 por personas
   const barData = [...reportes]
@@ -55,21 +55,102 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
   const circum = 2 * Math.PI * R
   const filled = (reportes.length / Math.max(totalMiembros, 1)) * circum
 
+  // Texto narrativo del resumen
+  function textoResumen() {
+    if (reportes.length === 0) {
+      return esPastorDeRed
+        ? `Aún no hay reportes esta semana en la Red ${redAsignada ?? ''}.`
+        : 'Aún no hay reportes esta semana.'
+    }
+    const contexto = esPastorDeRed
+      ? `En la Red ${redAsignada ?? ''}, `
+      : 'Esta semana, '
+    let texto = `${contexto}${reportes.length} ${reportes.length === 1 ? 'familia reportó' : 'familias reportaron'} su devocional`
+    if (totalMiembros > 0) {
+      texto += `, lo que representa el ${pct}% de participación`
+    }
+    texto += `. En total, ${totalPersonas} ${totalPersonas === 1 ? 'persona participó' : 'personas participaron'}`
+    if (totalAdultos > 0 || totalNinos > 0) {
+      texto += ` (${totalAdultos} ${totalAdultos === 1 ? 'adulto' : 'adultos'} y ${totalNinos} ${totalNinos === 1 ? 'niño' : 'niños'})`
+    }
+    texto += '.'
+    if (noReportaron > 0 && !esPastorDeRed) {
+      texto += ` Faltan ${noReportaron} ${noReportaron === 1 ? 'familia' : 'familias'} por reportar.`
+    }
+    return texto
+  }
+
   return (
     <div className="space-y-4 pb-6">
 
+      {/* ── Resumen narrativo ── */}
+      <div className="rounded-2xl px-4 py-4" style={{ background: LIGHT }}>
+        <p className="text-[10px] font-bold uppercase tracking-wide mb-1" style={{ color: PRIMARY }}>
+          {esPastorDeRed ? `Red ${redAsignada ?? ''} · Resumen de la semana` : 'Resumen de la semana'}
+        </p>
+        <p className="text-sm text-gray-700 leading-relaxed">{textoResumen()}</p>
+        {verEconomico && conOfrenda.length > 0 && (
+          <p className="text-sm text-gray-700 mt-1">
+            En cuanto a la ofrenda, {conOfrenda.length} {conOfrenda.length === 1 ? 'familia entregó' : 'familias entregaron'}{totalOfrenda > 0 ? ` un total de ${simbolo}${totalOfrenda.toLocaleString()} ${monedaPred}` : ' ofrenda sin monto registrado'}.
+          </p>
+        )}
+      </div>
+
       {/* ── KPI Cards ── */}
-      <div className={`grid gap-3 ${verEconomico ? 'grid-cols-2' : 'grid-cols-3'}`}>
-        <KPI icon="🏠" label="Familias" value={`${reportes.length}/${totalMiembros}`}
-          sub={`${pct}% participación`} accent={PRIMARY} />
-        <KPI icon="👥" label="Personas alcanzadas" value={String(totalPersonas)}
-          sub={`${totalAdultos} adultos · ${totalNinos} niños`} accent={ORANGE} />
-        <KPI icon="📊" label="Promedio / familia" value={String(promedio)}
-          sub="personas por hogar" accent={PRIMARY} />
-        {verEconomico && (
-          <KPI icon="💛" label="Ofrenda semana"
+      <div className={`grid gap-3 ${verEconomico ? 'grid-cols-2' : 'grid-cols-2'}`}>
+
+        <KPI
+          icon="🏠"
+          label="Familias que reportaron"
+          value={totalMiembros > 0 ? `${reportes.length} de ${totalMiembros}` : String(reportes.length)}
+          sub={pct > 0 ? `${pct}% de participación esta semana` : 'Sin miembros registrados aún'}
+          accent={PRIMARY}
+        />
+
+        <KPI
+          icon="👥"
+          label="Personas alcanzadas"
+          value={String(totalPersonas)}
+          sub={totalAdultos > 0 || totalNinos > 0
+            ? `${totalAdultos} adultos · ${totalNinos} niños`
+            : 'Total de participantes'}
+          accent={ORANGE}
+        />
+
+        <KPI
+          icon="📊"
+          label="Promedio por familia"
+          value={String(promedio)}
+          sub="personas en cada hogar que reportó"
+          accent={PRIMARY}
+        />
+
+        {verEconomico ? (
+          <KPI
+            icon="💛"
+            label="Ofrenda esta semana"
             value={totalOfrenda > 0 ? `${simbolo}${totalOfrenda.toLocaleString()}` : '—'}
-            sub={conOfrenda.length > 0 ? `${conOfrenda.length} familias dieron` : 'Sin ofrendas'} accent={ORANGE} />
+            sub={conOfrenda.length > 0
+              ? `${conOfrenda.length} de ${reportes.length} familias dieron`
+              : 'Ninguna familia registró ofrenda'}
+            accent={ORANGE}
+          />
+        ) : noReportaron > 0 ? (
+          <KPI
+            icon="⏳"
+            label="Pendientes"
+            value={String(noReportaron)}
+            sub={`${noReportaron === 1 ? 'familia no ha' : 'familias no han'} reportado aún`}
+            accent="#9CA3AF"
+          />
+        ) : (
+          <KPI
+            icon="✅"
+            label="Participación"
+            value={pct > 0 ? `${pct}%` : '—'}
+            sub="de las familias reportaron esta semana"
+            accent="#10B981"
+          />
         )}
       </div>
 
@@ -78,7 +159,9 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
 
         {/* Donut SVG */}
         <div className={`card py-4 ${verEconomico ? 'flex flex-col items-center' : 'flex items-center gap-6 px-6'}`}>
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-2">Participación</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-2">
+            ¿Cuántos reportaron?
+          </p>
           <div className="relative flex-shrink-0" style={{ width: 112, height: 112 }}>
             <svg width="112" height="112" viewBox="0 0 112 112">
               <circle cx={CX} cy={CY} r={R} fill="none" stroke="#E5E7EB" strokeWidth="10" />
@@ -97,42 +180,52 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
           </div>
           {verEconomico ? (
             <p className="text-[10px] text-gray-400 mt-1 text-center">
-              {reportes.length} sí · {noReportaron} pendientes
+              {reportes.length} reportaron · {noReportaron} pendientes
             </p>
           ) : (
             <div>
-              <p className="text-sm font-semibold text-gray-700">{reportes.length} familias reportaron</p>
-              <p className="text-[12px] text-gray-400">{noReportaron} pendientes · {totalPersonas} personas alcanzadas</p>
+              <p className="text-sm font-semibold text-gray-700">{reportes.length} {reportes.length === 1 ? 'familia reportó' : 'familias reportaron'}</p>
+              <p className="text-[12px] text-gray-400">
+                {noReportaron > 0 ? `${noReportaron} pendientes · ` : ''}{totalPersonas} personas alcanzadas
+              </p>
             </div>
           )}
         </div>
 
-        {/* Ofrenda — solo visible para roles con acceso económico */}
+        {/* Ofrenda — solo para roles con acceso económico */}
         {verEconomico && (
           <div className="card py-4 space-y-3">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Ofrenda</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Ofrenda familiar</p>
             <BarraProgreso
-              label="Familias que dieron"
+              label="Familias que dieron ofrenda"
               value={conOfrenda.length}
               total={reportes.length}
               color={ORANGE}
             />
             {totalOfrenda > 0 ? (
               <div className="space-y-1.5 pt-1">
-                <FilaOfrenda label="Total recaudado" value={`${simbolo}${totalOfrenda.toLocaleString()}`} bold accent={ORANGE} />
-                <FilaOfrenda label="Promedio familia" value={`${simbolo}${promedioOfrenda.toLocaleString()}`} />
+                <FilaOfrenda label="Total recaudado" value={`${simbolo}${totalOfrenda.toLocaleString()} ${monedaPred}`} bold accent={ORANGE} />
+                <FilaOfrenda label="Promedio por familia" value={`${simbolo}${promedioOfrenda.toLocaleString()} ${monedaPred}`} />
+                <p className="text-[10px] text-gray-400 italic pt-1">
+                  Solo se suman los montos donde la familia indicó un valor.
+                </p>
               </div>
             ) : (
-              <p className="text-[11px] text-gray-400 italic">Sin montos registrados</p>
+              <p className="text-[11px] text-gray-400 italic">Las familias marcaron ofrenda pero no registraron monto.</p>
             )}
           </div>
         )}
       </div>
 
-      {/* ── Barras: personas por familia ── */}
+      {/* ── Casas con más participantes ── */}
       {barData.length > 0 && (
         <div className="card">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-3">Personas por familia</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">
+            Participantes por Casa de Vida
+          </p>
+          <p className="text-[11px] text-gray-400 mb-3">
+            Cuántas personas tuvo cada familia en su devocional esta semana.
+          </p>
           <div className="space-y-2">
             {barData.map((r, i) => {
               const nombre = (r.perfiles?.nombre ?? r.perfiles?.email ?? 'Miembro').split(' ')[0]
@@ -156,10 +249,15 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
         </div>
       )}
 
-      {/* ── Actividad por día ── */}
+      {/* ── Días de mayor actividad ── */}
       {diasData.length > 0 && (
         <div className="card">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-3">Actividad por día</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">
+            ¿Qué días reportaron más?
+          </p>
+          <p className="text-[11px] text-gray-400 mb-3">
+            Días de la semana en los que las familias enviaron su reporte.
+          </p>
           <div className="flex items-end gap-2 h-20">
             {diasData.map(([dia, total], i) => {
               const h = Math.round((total / maxDia) * 100)
@@ -175,14 +273,17 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin' }
         </div>
       )}
 
-      {/* ── Lista detalle ── */}
+      {/* ── Lista de reportes ── */}
       <div className="card">
-        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-3">
-          Detalle · {reportes.length} reporte{reportes.length !== 1 ? 's' : ''}
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">
+          {esPastorDeRed ? `Reportes de la Red ${redAsignada ?? ''}` : 'Reportes recibidos'}
         </p>
-        {reportes.length === 0 ? (
-          <p className="text-center text-sm text-gray-400 py-6">Nadie ha reportado aún esta semana.</p>
-        ) : (
+        <p className="text-[11px] text-gray-400 mb-3">
+          {reportes.length === 0
+            ? 'Nadie ha reportado aún esta semana.'
+            : `${reportes.length} ${reportes.length === 1 ? 'reporte recibido' : 'reportes recibidos'} esta semana.`}
+        </p>
+        {reportes.length > 0 && (
           <div className="divide-y divide-gray-50">
             {reportes.map(r => (
               <div key={r.id} className="py-2.5 space-y-0.5">
@@ -242,8 +343,8 @@ function KPI({ icon, label, value, sub, accent }: {
         <span className="text-base">{icon}</span>
         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide leading-tight">{label}</p>
       </div>
-      <p className="text-[22px] font-extrabold leading-none mb-0.5" style={{ color: accent }}>{value}</p>
-      <p className="text-[11px] text-gray-400">{sub}</p>
+      <p className="text-[22px] font-extrabold leading-none mb-1" style={{ color: accent }}>{value}</p>
+      <p className="text-[11px] text-gray-400 leading-snug">{sub}</p>
     </div>
   )
 }

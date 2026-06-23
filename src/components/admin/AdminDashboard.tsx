@@ -194,7 +194,7 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
             <a href="/admin?vista=nuevo" className="btn-primary text-sm px-4 py-2 inline-block">Publicar uno nuevo</a>
           </div>
         )}
-        {vista === 'reportes' && <ReportesLista reportes={reportesSemana} totalMiembros={totalMiembros} rol={rol} />}
+        {vista === 'reportes' && <ReportesLista reportes={reportesSemana} totalMiembros={totalMiembros} rol={rol} redAsignada={redAsignada} />}
         {vista === 'usuarios' && <UsuariosLista currentUserId={user.id} />}
 
       </div>
