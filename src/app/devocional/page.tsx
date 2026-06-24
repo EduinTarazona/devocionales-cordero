@@ -24,22 +24,25 @@ export default async function DevocionalPage({ searchParams }: { searchParams?: 
     .limit(1)
     .maybeSingle()
 
-  const { data: reporte } = devocional
+  const { data: reportes } = devocional
     ? await supabase
         .from('reportes')
-        .select('id, adultos, ninos, hubo_ofrenda, monto_ofrenda, moneda_ofrenda')
+        .select('id, adultos, ninos, hubo_ofrenda, monto_ofrenda, moneda_ofrenda, tipo, nombre_grupo, nombre_empresa')
         .eq('devocional_id', devocional.id)
         .eq('user_id', user.id)
-        .maybeSingle()
-    : { data: null }
+    : { data: [] }
+
+  const reportesPorTipo: Record<string, any> = {}
+  for (const r of reportes ?? []) {
+    reportesPorTipo[r.tipo ?? 'familiar'] = r
+  }
 
   return (
     <DevocionalView
       user={{ id: user.id, email: user.email!, nombre: user.user_metadata?.full_name }}
       rol={rol}
       devocional={devocional}
-      yaReporto={!!reporte}
-      miReporte={reporte ?? null}
+      reportesPorTipo={reportesPorTipo}
       previewRol={previewRol}
     />
   )

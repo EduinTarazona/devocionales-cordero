@@ -10,14 +10,16 @@ type MiReporte = {
   hubo_ofrenda: boolean | null
   monto_ofrenda: number | null
   moneda_ofrenda: string | null
+  tipo: string | null
+  nombre_grupo: string | null
+  nombre_empresa: string | null
 } | null
 
 type Props = {
   user: { id: string; email: string; nombre?: string }
   rol: string
   devocional: any
-  yaReporto: boolean
-  miReporte?: MiReporte
+  reportesPorTipo: Record<string, MiReporte>
   previewRol?: string | null
 }
 
@@ -54,32 +56,13 @@ const TIPOS = [
   },
 ]
 
-const iconoBiblia = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-  </svg>
-)
-const iconoIdea = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <line x1="12" y1="8" x2="12" y2="12" />
-    <line x1="12" y1="16" x2="12.01" y2="16" />
-  </svg>
-)
-const iconoManos = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0" />
-    <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" />
-    <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" />
-    <path d="M6 14v0a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-2.5" />
-  </svg>
-)
-
-export default function DevocionalView({ user, rol, devocional, yaReporto, miReporte, previewRol }: Props) {
+export default function DevocionalView({ user, rol, devocional, reportesPorTipo, previewRol }: Props) {
+  const [tipoSeleccionado, setTipoSeleccionado] = useState<'familiar' | 'grupal' | 'empresarial'>('familiar')
   const [modalAbierto, setModalAbierto] = useState(false)
-  const [reporteEnviado, setReporteEnviado] = useState(yaReporto)
-  const [reporteData, setReporteData] = useState<MiReporte>(miReporte ?? null)
+  const [reportes, setReportes] = useState<Record<string, MiReporte>>(reportesPorTipo)
+
+  const reporteActual = reportes[tipoSeleccionado] ?? null
+  const yaReporto = !!reporteActual
 
   if (!devocional) {
     return (
@@ -109,18 +92,25 @@ export default function DevocionalView({ user, rol, devocional, yaReporto, miRep
       <div className="min-h-screen" style={{ background: '#F5F0E8' }}>
         <div className="max-w-xl mx-auto px-5 py-8 pb-16">
 
-          {/* Tipos */}
+          {/* Tipos — ahora clickables */}
           <div className="flex gap-3 mb-7">
             {TIPOS.map(t => {
-              const activo = devocional.tipo === t.key
+              const activo = tipoSeleccionado === t.key
+              const reportado = !!reportes[t.key]
               return (
-                <div key={t.key}
-                  className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-2xl border-2 transition-all ${
-                    activo ? 'bg-primary border-primary text-white shadow-md' : 'bg-white border-gray-200 text-gray-400'
-                  }`}>
+                <button
+                  key={t.key}
+                  onClick={() => setTipoSeleccionado(t.key as any)}
+                  className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-2xl border-2 transition-all relative ${
+                    activo ? 'bg-primary border-primary text-white shadow-md' : 'bg-white border-gray-200 text-gray-400 hover:border-gray-300'
+                  }`}
+                >
+                  {reportado && (
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-teal-400" />
+                  )}
                   <span className={activo ? 'text-white' : 'text-gray-300'}>{t.icon}</span>
                   <span className={`text-[11px] font-bold tracking-wide ${activo ? 'text-white' : 'text-gray-400'}`}>{t.label}</span>
-                </div>
+                </button>
               )
             })}
           </div>
@@ -218,7 +208,6 @@ export default function DevocionalView({ user, rol, devocional, yaReporto, miRep
             </div>
           )}
 
-          {/* Intercambiemos Ideas */}
           {devocional.intercambiemos_ideas && (
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-3">
@@ -243,33 +232,39 @@ export default function DevocionalView({ user, rol, devocional, yaReporto, miRep
             </p>
           )}
 
-          {/* Cierre */}
           <p className="text-center font-extrabold text-base mb-8" style={{ color: '#F7941D' }}>
             ¡Yo y mi Casa Serviremos al Señor!
           </p>
 
-          {/* Botón reporte */}
-          {reporteEnviado ? (
+          {/* Botón / estado de reporte por tipo */}
+          {yaReporto ? (
             <div className="rounded-2xl border-2 border-teal bg-white text-center py-6 space-y-2 shadow-sm mb-6 px-5">
               <div className="text-4xl mb-1">✅</div>
-              <p className="font-bold text-teal text-base">¡Ya reportaste esta semana!</p>
-              <p className="text-xs text-gray-400">Gracias por participar con tu familia</p>
-              {reporteData && (
+              <p className="font-bold text-teal text-base">
+                ¡Ya reportaste el devocional {tipoSeleccionado}!
+              </p>
+              <p className="text-xs text-gray-400">Gracias por participar</p>
+              {reporteActual && (
                 <div className="mt-3 pt-3 border-t border-gray-100 space-y-1 text-sm text-gray-600">
-                  {(reporteData.adultos != null || reporteData.ninos != null) && (
-                    <p>
-                      👨‍👩‍👧 <span className="font-semibold">{(reporteData.adultos ?? 0) + (reporteData.ninos ?? 0)}</span> personas
-                      &nbsp;·&nbsp; {reporteData.adultos ?? 0} adultos &nbsp;·&nbsp; {reporteData.ninos ?? 0} niños
-                    </p>
+                  {tipoSeleccionado === 'familiar' && (
+                    <>
+                      {(reporteActual.adultos != null || reporteActual.ninos != null) && (
+                        <p>👨‍👩‍👧 <span className="font-semibold">{(reporteActual.adultos ?? 0) + (reporteActual.ninos ?? 0)}</span> personas · {reporteActual.adultos ?? 0} adultos · {reporteActual.ninos ?? 0} niños</p>
+                      )}
+                    </>
                   )}
-                  {reporteData.hubo_ofrenda ? (
-                    <p>
-                      💛 Ofrenda: <span className="font-semibold text-orange-500">
-                        {reporteData.monto_ofrenda
-                          ? `${reporteData.moneda_ofrenda === 'Bs' ? 'Bs.' : '$'}${reporteData.monto_ofrenda.toLocaleString()} ${reporteData.moneda_ofrenda ?? 'USD'}`
-                          : 'Sí'}
-                      </span>
-                    </p>
+                  {tipoSeleccionado === 'grupal' && reporteActual.nombre_grupo && (
+                    <p>👥 Grupo: <span className="font-semibold">{reporteActual.nombre_grupo}</span> · {(reporteActual.adultos ?? 0) + (reporteActual.ninos ?? 0)} personas</p>
+                  )}
+                  {tipoSeleccionado === 'empresarial' && reporteActual.nombre_empresa && (
+                    <p>🏢 Empresa: <span className="font-semibold">{reporteActual.nombre_empresa}</span> · {(reporteActual.adultos ?? 0) + (reporteActual.ninos ?? 0)} personas</p>
+                  )}
+                  {reporteActual.hubo_ofrenda ? (
+                    <p>💛 Ofrenda: <span className="font-semibold text-orange-500">
+                      {reporteActual.monto_ofrenda
+                        ? `${reporteActual.moneda_ofrenda === 'Bs' ? 'Bs.' : '$'}${reporteActual.monto_ofrenda.toLocaleString()} ${reporteActual.moneda_ofrenda ?? 'USD'}`
+                        : 'Sí'}
+                    </span></p>
                   ) : (
                     <p className="text-gray-400 text-xs">Sin ofrenda registrada</p>
                   )}
@@ -281,7 +276,7 @@ export default function DevocionalView({ user, rol, devocional, yaReporto, miRep
               onClick={() => setModalAbierto(true)}
               className="btn-primary w-full text-base py-4 rounded-2xl shadow-md mb-6"
             >
-              Ya lo realizamos — Reportar
+              Ya lo realizamos — Reportar {tipoSeleccionado}
             </button>
           )}
 
@@ -322,11 +317,11 @@ export default function DevocionalView({ user, rol, devocional, yaReporto, miRep
         <ReporteModal
           devocionalId={devocional.id}
           userId={user.id}
+          tipo={tipoSeleccionado}
           onClose={() => setModalAbierto(false)}
           onSuccess={(datos) => {
-            setReporteEnviado(true)
+            setReportes(prev => ({ ...prev, [tipoSeleccionado]: { id: '', tipo: tipoSeleccionado, ...datos } as any }))
             setModalAbierto(false)
-            if (datos) setReporteData(datos)
           }}
         />
       )}
