@@ -126,13 +126,13 @@ export default function HistorialView({ user, rol, reportes }: Props) {
                     )}
                     {r.hubo_ofrenda && (
                       <span className="badge text-white" style={{ background: TEAL }}>
-                        Ofrenda{r.monto_ofrenda ? `: ${r.monto_ofrenda.toLocaleString()} ${r.moneda_ofrenda ?? 'USD'}` : ''}
+                        Ofrenda{r.monto_ofrenda ? `: ${r.monto_ofrenda.toLocaleString()} ${r.moneda_ofrenda === 'USD' ? 'USD' : r.moneda_ofrenda === 'Bs' ? 'Bs' : 'Pesos'}` : ''}
                       </span>
                     )}
                   </div>
 
-                  {r.devocionales?.pasaje && (
-                    <p className="text-xs italic" style={{ color: PRIMARY }}>"{r.devocionales.pasaje}"</p>
+                  {r.devocionales?.referencia && (
+                    <p className="text-xs font-medium" style={{ color: PRIMARY }}>{r.devocionales.referencia}</p>
                   )}
 
                   {r.nota && (
