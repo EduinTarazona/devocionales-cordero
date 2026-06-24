@@ -12,7 +12,7 @@ export default async function HistorialPage() {
 
   const { data: reportes } = await supabase
     .from('reportes')
-    .select('id, personas_participaron, hubo_ofrenda, monto_ofrenda, nota, created_at, devocionales(id, titulo, tipo, pasaje, referencia)')
+    .select('id, adultos, ninos, personas_participaron, hubo_ofrenda, monto_ofrenda, moneda_ofrenda, nota, tipo, nombre_grupo, nombre_empresa, created_at, devocionales(id, titulo, pasaje, referencia)')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
