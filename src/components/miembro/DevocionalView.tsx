@@ -59,6 +59,7 @@ const TIPOS = [
 export default function DevocionalView({ user, rol, devocional, reportesPorTipo, previewRol }: Props) {
   const [tipoSeleccionado, setTipoSeleccionado] = useState<'familiar' | 'grupal' | 'empresarial'>('familiar')
   const [modalAbierto, setModalAbierto] = useState(false)
+  const [modoEditar, setModoEditar] = useState(false)
   const [reportes, setReportes] = useState<Record<string, MiReporte>>(reportesPorTipo)
 
   const reporteActual = reportes[tipoSeleccionado] ?? null
@@ -244,6 +245,12 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
                 ¡Ya reportaste el devocional {tipoSeleccionado}!
               </p>
               <p className="text-xs text-gray-400">Gracias por participar</p>
+              <button
+                onClick={() => { setModoEditar(true); setModalAbierto(true) }}
+                className="text-xs text-primary underline hover:opacity-70 transition-opacity"
+              >
+                Corregir reporte
+              </button>
               {reporteActual && (
                 <div className="mt-3 pt-3 border-t border-gray-100 space-y-1 text-sm text-gray-600">
                   {tipoSeleccionado === 'familiar' && (
@@ -318,10 +325,12 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
           devocionalId={devocional.id}
           userId={user.id}
           tipo={tipoSeleccionado}
-          onClose={() => setModalAbierto(false)}
+          reporteExistente={modoEditar ? reporteActual : null}
+          onClose={() => { setModalAbierto(false); setModoEditar(false) }}
           onSuccess={(datos) => {
-            setReportes(prev => ({ ...prev, [tipoSeleccionado]: { id: '', tipo: tipoSeleccionado, ...datos } as any }))
+            setReportes(prev => ({ ...prev, [tipoSeleccionado]: { ...prev[tipoSeleccionado], ...datos } as any }))
             setModalAbierto(false)
+            setModoEditar(false)
           }}
         />
       )}

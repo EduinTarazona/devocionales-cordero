@@ -12,10 +12,22 @@ type DatosReporte = {
   nombre_empresa: string | null
 }
 
+type ReporteExistente = {
+  id: string
+  adultos: number | null
+  ninos: number | null
+  hubo_ofrenda: boolean | null
+  monto_ofrenda: number | null
+  moneda_ofrenda: string | null
+  nombre_grupo: string | null
+  nombre_empresa: string | null
+} | null
+
 type Props = {
   devocionalId: string
   userId: string
   tipo: 'familiar' | 'grupal' | 'empresarial'
+  reporteExistente?: ReporteExistente
   onClose: () => void
   onSuccess: (datos?: DatosReporte) => void
 }
@@ -32,16 +44,19 @@ const TITULO: Record<string, string> = {
   empresarial: 'Reporte empresarial',
 }
 
-export default function ReporteModal({ devocionalId, userId, tipo, onClose, onSuccess }: Props) {
-  const [participantes, setParticipantes] = useState(1)
-  const [adultos, setAdultos] = useState(1)
-  const [ninos, setNinos] = useState(0)
-  const [nombreGrupo, setNombreGrupo] = useState('')
-  const [nombreEmpresa, setNombreEmpresa] = useState('')
+export default function ReporteModal({ devocionalId, userId, tipo, reporteExistente, onClose, onSuccess }: Props) {
+  const esEdicion = !!reporteExistente
+  const [participantes, setParticipantes] = useState(
+    tipo !== 'familiar' ? (reporteExistente?.adultos ?? 1) : 1
+  )
+  const [adultos, setAdultos] = useState(reporteExistente?.adultos ?? 1)
+  const [ninos, setNinos] = useState(reporteExistente?.ninos ?? 0)
+  const [nombreGrupo, setNombreGrupo] = useState(reporteExistente?.nombre_grupo ?? '')
+  const [nombreEmpresa, setNombreEmpresa] = useState(reporteExistente?.nombre_empresa ?? '')
   const [red, setRed] = useState('')
-  const [huboOfrenda, setHuboOfrenda] = useState(false)
-  const [moneda, setMoneda] = useState('USD')
-  const [montoOfrenda, setMontoOfrenda] = useState('')
+  const [huboOfrenda, setHuboOfrenda] = useState(reporteExistente?.hubo_ofrenda ?? false)
+  const [moneda, setMoneda] = useState(reporteExistente?.moneda_ofrenda ?? 'USD')
+  const [montoOfrenda, setMontoOfrenda] = useState(reporteExistente?.monto_ofrenda ? String(reporteExistente.monto_ofrenda) : '')
   const [nota, setNota] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [error, setError] = useState('')
@@ -61,34 +76,35 @@ export default function ReporteModal({ devocionalId, userId, tipo, onClose, onSu
     setError('')
 
     const totalPersonas = tipo === 'familiar' ? adultos + ninos : participantes
-
-    const { error: err } = await supabase.from('reportes').insert({
-      devocional_id: devocionalId,
-      user_id: userId,
-      tipo,
+    const datos = {
       adultos: tipo === 'familiar' ? adultos : participantes,
       ninos: tipo === 'familiar' ? ninos : 0,
       personas_participaron: totalPersonas,
       nombre_grupo: tipo === 'grupal' ? nombreGrupo.trim() : null,
       nombre_empresa: tipo === 'empresarial' ? nombreEmpresa.trim() : null,
-      red: red.trim() || null,
       hubo_ofrenda: huboOfrenda,
       monto_ofrenda: huboOfrenda && montoOfrenda ? parseFloat(montoOfrenda) : null,
       moneda_ofrenda: huboOfrenda ? moneda : null,
-      nota: nota || null,
-    })
+    }
+
+    const { error: err } = esEdicion
+      ? await supabase.from('reportes').update(datos).eq('id', reporteExistente!.id)
+      : await supabase.from('reportes').insert({
+        devocional_id: devocionalId,
+        user_id: userId,
+        tipo,
+        ...datos,
+        red: red.trim() || null,
+        nota: nota || null,
+      })
 
     setEnviando(false)
     if (err) { setError('Error al enviar el reporte. Intenta de nuevo.'); return }
 
     onSuccess({
-      adultos: tipo === 'familiar' ? adultos : participantes,
-      ninos: tipo === 'familiar' ? ninos : 0,
-      hubo_ofrenda: huboOfrenda,
-      monto_ofrenda: huboOfrenda && montoOfrenda ? parseFloat(montoOfrenda) : null,
-      moneda_ofrenda: huboOfrenda ? moneda : null,
-      nombre_grupo: tipo === 'grupal' ? nombreGrupo.trim() : null,
-      nombre_empresa: tipo === 'empresarial' ? nombreEmpresa.trim() : null,
+      ...datos,
+      nombre_grupo: datos.nombre_grupo,
+      nombre_empresa: datos.nombre_empresa,
     })
   }
 
@@ -111,7 +127,7 @@ export default function ReporteModal({ devocionalId, userId, tipo, onClose, onSu
       <div className="bg-white rounded-t-3xl w-full max-w-lg p-6 space-y-5 max-h-[90vh] overflow-y-auto">
 
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">{TITULO[tipo]}</h2>
+          <h2 className="text-lg font-bold text-gray-900">{esEdicion ? `Corregir reporte ${tipo}` : TITULO[tipo]}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
         </div>
 
@@ -218,7 +234,7 @@ export default function ReporteModal({ devocionalId, userId, tipo, onClose, onSu
         {error && <p className="text-sm text-red-500">{error}</p>}
 
         <button onClick={enviarReporte} disabled={enviando} className="btn-primary w-full py-3.5 text-base">
-          {enviando ? 'Enviando...' : 'Enviar reporte'}
+          {enviando ? 'Guardando...' : esEdicion ? 'Guardar corrección' : 'Enviar reporte'}
         </button>
       </div>
     </div>
