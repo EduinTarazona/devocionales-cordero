@@ -16,7 +16,7 @@ type Props = {
   devocionalActivo: any
   reportesSemana: any[]
   totalMiembros: number
-  ofrendaMes: number
+  ofrendaMesPorMoneda: Record<string, number>
   noReportaron: MiembroPendiente[]
   nuevosRegistros: NuevoRegistro[]
   rol: string
@@ -33,11 +33,16 @@ const TITULO_VISTA: Record<Vista, string> = {
   usuarios: 'Usuarios',
 }
 
-export default function AdminDashboard({ user, devocionalActivo, reportesSemana, totalMiembros, ofrendaMes, noReportaron, nuevosRegistros, rol, redAsignada, vista, previewRol }: Props) {
+export default function AdminDashboard({ user, devocionalActivo, reportesSemana, totalMiembros, ofrendaMesPorMoneda, noReportaron, nuevosRegistros, rol, redAsignada, vista, previewRol }: Props) {
   const verEconomico = puedeVerEconomico(rol)
   const esAccesoTotal = ['admin', 'pastor', 'pastor_general', 'plan_de_vida'].includes(rol)
   const totalPersonas = reportesSemana.reduce((s, r) => s + (r.personas_participaron ?? 0), 0)
-  const totalOfrenda = reportesSemana.filter(r => r.hubo_ofrenda).reduce((s, r) => s + (r.monto_ofrenda ?? 0), 0)
+  const ofrendaPorMoneda: Record<string, number> = {}
+  reportesSemana.filter(r => r.hubo_ofrenda && r.monto_ofrenda).forEach(r => {
+    const moneda = r.moneda_ofrenda ?? 'USD'
+    ofrendaPorMoneda[moneda] = (ofrendaPorMoneda[moneda] ?? 0) + r.monto_ofrenda
+  })
+  const hayOfrenda = Object.keys(ofrendaPorMoneda).length > 0
   const reportaron = reportesSemana.length
 
   const rolBadge = (
@@ -81,16 +86,30 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
               ))}
             </div>
 
-            {verEconomico && (totalOfrenda > 0 || ofrendaMes > 0) && (
+            {verEconomico && hayOfrenda && (
               <div className="card border-teal border space-y-3">
                 <div>
                   <p className="text-sm text-gray-500">Ofrenda esta semana</p>
-                  <p className="text-2xl font-bold text-teal">${totalOfrenda.toLocaleString()}</p>
+                  <div className="flex flex-wrap gap-3 mt-1">
+                    {Object.entries(ofrendaPorMoneda).map(([moneda, total]) => (
+                      <p key={moneda} className="text-2xl font-bold text-teal">
+                        {total.toLocaleString()} <span className="text-base font-semibold">{moneda}</span>
+                      </p>
+                    ))}
+                  </div>
                 </div>
+                {Object.keys(ofrendaMesPorMoneda).length > 0 && (
                 <div className="border-t border-gray-100 pt-3">
                   <p className="text-sm text-gray-500">Ofrenda este mes</p>
-                  <p className="text-xl font-semibold text-teal">${ofrendaMes.toLocaleString()}</p>
+                  <div className="flex flex-wrap gap-3 mt-1">
+                    {Object.entries(ofrendaMesPorMoneda).map(([moneda, total]) => (
+                      <p key={moneda} className="text-xl font-semibold text-teal">
+                        {total.toLocaleString()} <span className="text-sm font-medium">{moneda}</span>
+                      </p>
+                    ))}
+                  </div>
                 </div>
+                )}
               </div>
             )}
 

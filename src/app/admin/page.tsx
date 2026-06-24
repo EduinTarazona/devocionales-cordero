@@ -60,12 +60,14 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
 
   const { data: reportesMes } = await supabase
     .from('reportes')
-    .select('hubo_ofrenda, monto_ofrenda')
+    .select('hubo_ofrenda, monto_ofrenda, moneda_ofrenda')
     .gte('created_at', inicioMes.toISOString())
 
-  const ofrendaMes = (reportesMes ?? [])
-    .filter(r => r.hubo_ofrenda)
-    .reduce((s, r) => s + (r.monto_ofrenda ?? 0), 0)
+  const ofrendaMesPorMoneda: Record<string, number> = {}
+  ;(reportesMes ?? []).filter(r => r.hubo_ofrenda && r.monto_ofrenda).forEach(r => {
+    const moneda = r.moneda_ofrenda ?? 'USD'
+    ofrendaMesPorMoneda[moneda] = (ofrendaMesPorMoneda[moneda] ?? 0) + r.monto_ofrenda
+  })
 
   const miembrosQuery = supabase
     .from('perfiles')
@@ -115,7 +117,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
       devocionalActivo={devocionalActivo}
       reportesSemana={reportesSemana ?? []}
       totalMiembros={totalMiembros ?? 0}
-      ofrendaMes={ofrendaMes}
+      ofrendaMesPorMoneda={ofrendaMesPorMoneda}
       noReportaron={noReportaron}
       nuevosRegistros={nuevosRegistros ?? []}
       rol={rol}
