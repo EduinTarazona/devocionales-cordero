@@ -38,7 +38,9 @@ function totalPersonas(r: Reporte) {
 }
 
 function simbolo(moneda: string | null) {
-  return moneda === 'Bs' ? 'Bs.' : '$'
+  if (moneda === 'Bs')    return 'Bs.'
+  if (moneda === 'Pesos') return '$'
+  return '$'
 }
 
 function tipoBadge(tipo: string | null) {
@@ -124,7 +126,7 @@ export default function HistorialView({ user, rol, reportes }: Props) {
                     )}
                     {r.hubo_ofrenda && (
                       <span className="badge text-white" style={{ background: TEAL }}>
-                        Ofrenda{r.monto_ofrenda ? `: ${simbolo(r.moneda_ofrenda)}${r.monto_ofrenda.toLocaleString()} ${r.moneda_ofrenda ?? ''}` : ''}
+                        Ofrenda{r.monto_ofrenda ? `: ${r.monto_ofrenda.toLocaleString()} ${r.moneda_ofrenda ?? 'USD'}` : ''}
                       </span>
                     )}
                   </div>
