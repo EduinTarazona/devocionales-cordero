@@ -141,17 +141,16 @@ export default function UsuariosLista({ currentUserId }: { currentUserId: string
                     {ROL_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </select>
 
-                  {/* Red asignada — solo visible para pastor_red */}
-                  {u.rol === 'pastor_red' && (
-                    <input
-                      type="text"
-                      placeholder="Red (ej: 1)"
-                      defaultValue={u.red_asignada ?? ''}
-                      onBlur={e => cambiarRed(u.id, e.target.value)}
-                      disabled={guardando || esYo}
-                      className="text-xs border border-orange-200 rounded-lg px-2 py-1.5 bg-white w-24 disabled:opacity-50 focus:outline-none focus:border-orange-400"
-                    />
-                  )}
+                  {/* Red asignada — visible para todos */}
+                  <input
+                    type="text"
+                    placeholder="Red (ej: 1)"
+                    defaultValue={u.red_asignada ?? ''}
+                    onBlur={e => cambiarRed(u.id, e.target.value)}
+                    disabled={guardando || esYo}
+                    title="Número de red al que pertenece"
+                    className="text-xs border border-orange-200 rounded-lg px-2 py-1.5 bg-white w-24 disabled:opacity-50 focus:outline-none focus:border-orange-400"
+                  />
 
                   <button
                     onClick={() => toggleActivo(u.id, u.activo)}

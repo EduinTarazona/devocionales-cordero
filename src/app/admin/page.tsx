@@ -67,11 +67,15 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
     .filter(r => r.hubo_ofrenda)
     .reduce((s, r) => s + (r.monto_ofrenda ?? 0), 0)
 
-  const { count: totalMiembros } = await supabase
+  const miembrosQuery = supabase
     .from('perfiles')
     .select('*', { count: 'exact', head: true })
     .eq('activo', true)
     .in('rol', ['miembro', 'lider'])
+
+  const { count: totalMiembros } = rol === 'pastor_red' && redAsignada
+    ? await miembrosQuery.eq('red_asignada', redAsignada)
+    : await miembrosQuery
 
   // Miembros que NO han reportado el devocional activo
   let noReportaron: { id: string; nombre: string | null; email: string | null }[] = []
@@ -82,11 +86,15 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
       .eq('devocional_id', devocionalActivo.id)
     const idsReportaron = new Set((reportantes ?? []).map(r => r.user_id))
 
-    const { data: miembrosActivos } = await supabase
+    const miembrosActivosQuery = supabase
       .from('perfiles')
       .select('id, nombre, email, rol')
       .eq('activo', true)
       .in('rol', ['miembro', 'lider'])
+
+    const { data: miembrosActivos } = rol === 'pastor_red' && redAsignada
+      ? await miembrosActivosQuery.eq('red_asignada', redAsignada)
+      : await miembrosActivosQuery
 
     noReportaron = (miembrosActivos ?? [])
       .filter(m => !idsReportaron.has(m.id))
