@@ -16,7 +16,6 @@ export default async function DirectorioPage() {
   const { data: casas } = await supabase
     .from('perfiles')
     .select('id, nombre, apellidos_familia, direccion, telefono, adultos, ninos, red_asignada, rol, email')
-    .eq('activo', true)
     .in('rol', ['miembro', 'lider'])
     .order('apellidos_familia', { ascending: true })
 
