@@ -239,6 +239,16 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
             <p className="text-xs text-gray-400">{displayRol(rol)}</p>
           </div>
         </div>
+        <a
+          href="/perfil"
+          className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-gray-200 text-sm text-gray-500 hover:bg-gray-50 transition-colors"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          Editar perfil
+        </a>
         <button
           onClick={cerrarSesion}
           className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-gray-200 text-sm text-gray-500 hover:bg-gray-50 transition-colors"
