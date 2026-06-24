@@ -101,6 +101,14 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
       .map(({ id, nombre, email }) => ({ id, nombre, email }))
   }
 
+  // Nuevos registros esta semana
+  const { data: nuevosRegistros } = await supabase
+    .from('perfiles')
+    .select('id, nombre, email, created_at')
+    .eq('perfil_completo', true)
+    .gte('created_at', inicioSemana.toISOString())
+    .order('created_at', { ascending: false })
+
   return (
     <AdminDashboard
       user={{ id: user.id, nombre: user.user_metadata?.full_name, email: user.email! }}
@@ -109,6 +117,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
       totalMiembros={totalMiembros ?? 0}
       ofrendaMes={ofrendaMes}
       noReportaron={noReportaron}
+      nuevosRegistros={nuevosRegistros ?? []}
       rol={rol}
       redAsignada={redAsignada}
       vista={vista}

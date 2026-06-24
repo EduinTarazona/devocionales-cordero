@@ -9,6 +9,8 @@ import { displayRol, puedeVerEconomico } from '@/lib/roles'
 type MiembroPendiente = { id: string; nombre: string | null; email: string | null }
 type Vista = 'resumen' | 'nuevo' | 'editar' | 'reportes' | 'usuarios'
 
+type NuevoRegistro = { id: string; nombre: string | null; email: string | null; created_at: string }
+
 type Props = {
   user: { id: string; nombre?: string; email: string }
   devocionalActivo: any
@@ -16,6 +18,7 @@ type Props = {
   totalMiembros: number
   ofrendaMes: number
   noReportaron: MiembroPendiente[]
+  nuevosRegistros: NuevoRegistro[]
   rol: string
   redAsignada?: string | null
   vista: Vista
@@ -30,8 +33,9 @@ const TITULO_VISTA: Record<Vista, string> = {
   usuarios: 'Usuarios',
 }
 
-export default function AdminDashboard({ user, devocionalActivo, reportesSemana, totalMiembros, ofrendaMes, noReportaron, rol, redAsignada, vista, previewRol }: Props) {
+export default function AdminDashboard({ user, devocionalActivo, reportesSemana, totalMiembros, ofrendaMes, noReportaron, nuevosRegistros, rol, redAsignada, vista, previewRol }: Props) {
   const verEconomico = puedeVerEconomico(rol)
+  const esAccesoTotal = ['admin', 'pastor', 'pastor_general', 'plan_de_vida'].includes(rol)
   const totalPersonas = reportesSemana.reduce((s, r) => s + (r.personas_participaron ?? 0), 0)
   const totalOfrenda = reportesSemana.filter(r => r.hubo_ofrenda).reduce((s, r) => s + (r.monto_ofrenda ?? 0), 0)
   const reportaron = reportesSemana.length
@@ -120,6 +124,37 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
                     Y {noReportaron.length - 10} mas...
                   </p>
                 )}
+              </div>
+            )}
+
+            {/* Nuevos registros esta semana */}
+            {esAccesoTotal && nuevosRegistros.length > 0 && (
+              <div className="card space-y-2 border-l-4" style={{ borderLeftColor: '#0D9488' }}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-700">Nuevos esta semana</p>
+                    <p className="text-xs text-gray-400">Personas que completaron su registro</p>
+                  </div>
+                  <span className="badge text-white font-bold" style={{ background: '#0D9488' }}>
+                    {nuevosRegistros.length}
+                  </span>
+                </div>
+                <div className="divide-y divide-gray-50 -mx-1">
+                  {nuevosRegistros.map(m => (
+                    <div key={m.id} className="py-2 px-1 flex items-center justify-between text-sm">
+                      <div>
+                        <p className="font-medium text-gray-800">{m.nombre ?? m.email}</p>
+                        {m.nombre && <p className="text-xs text-gray-400">{m.email}</p>}
+                      </div>
+                      <p className="text-xs text-gray-400">
+                        {new Date(m.created_at).toLocaleDateString('es', { weekday: 'short', day: 'numeric', month: 'short' })}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <a href="/admin?vista=usuarios" className="text-xs text-teal font-medium block pt-1">
+                  Asignarles su red →
+                </a>
               </div>
             )}
 
