@@ -226,7 +226,7 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
                   </p>
                 </div>
                 <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ background: '#FEF3E2', color: ORANGE }}>
-                  {totalParticiparon(r)} personas
+                  {totalParticiparon(r)} {totalParticiparon(r) === 1 ? 'persona' : 'personas'}
                 </span>
               </div>
             ))}
@@ -252,7 +252,7 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
                   </p>
                 </div>
                 <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ background: '#CCFBF1', color: TEAL }}>
-                  {totalParticiparon(r)} personas
+                  {totalParticiparon(r)} {totalParticiparon(r) === 1 ? 'persona' : 'personas'}
                 </span>
               </div>
             ))}
