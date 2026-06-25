@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import { puedeVerEconomico, esPastorRed } from '@/lib/roles'
 
 type Props = { reportes: any[]; totalMiembros: number; rol?: string; redAsignada?: string | null }
@@ -22,13 +23,18 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
   const verEconomico = puedeVerEconomico(rol)
   const esPastorDeRed = esPastorRed(rol)
 
+  // ── Filtro por red ──
+  const [redFiltro, setRedFiltro] = useState<string>('todas')
+  const redesDisponibles = Array.from(new Set(reportes.map(r => r.red).filter(Boolean))).sort()
+  const reportesFiltrados = redFiltro === 'todas' ? reportes : reportes.filter(r => r.red === redFiltro)
+
   // ── Separar por tipo ──
-  const familiares   = reportes.filter(r => !r.tipo || r.tipo === 'familiar')
-  const grupales     = reportes.filter(r => r.tipo === 'grupal')
-  const empresariales = reportes.filter(r => r.tipo === 'empresarial')
+  const familiares    = reportesFiltrados.filter(r => !r.tipo || r.tipo === 'familiar')
+  const grupales      = reportesFiltrados.filter(r => r.tipo === 'grupal')
+  const empresariales = reportesFiltrados.filter(r => r.tipo === 'empresarial')
 
   // ── Totales generales ──
-  const totalPersonas   = reportes.reduce((s, r) => s + totalParticiparon(r), 0)
+  const totalPersonas   = reportesFiltrados.reduce((s, r) => s + totalParticiparon(r), 0)
   const personasFam     = familiares.reduce((s, r) => s + totalParticiparon(r), 0)
   const personasGrup    = grupales.reduce((s, r) => s + totalParticiparon(r), 0)
   const personasEmp     = empresariales.reduce((s, r) => s + totalParticiparon(r), 0)
@@ -36,7 +42,7 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
   const totalNinos      = familiares.reduce((s, r) => s + (r.ninos ?? 0), 0)
 
   // ── Ofrenda ──
-  const conOfrenda      = reportes.filter(r => r.hubo_ofrenda)
+  const conOfrenda      = reportesFiltrados.filter(r => r.hubo_ofrenda)
   const totalOfrenda    = conOfrenda.reduce((s, r) => s + (r.monto_ofrenda ?? 0), 0)
   const promedioOfrenda = conOfrenda.length > 0 ? Math.round(totalOfrenda / conOfrenda.length) : 0
   const monedaPred      = conOfrenda.length > 0 ? (conOfrenda[0].moneda_ofrenda ?? 'USD') : 'USD'
@@ -48,7 +54,7 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
 
   // ── Redes ──
   const redesMap: Record<string, number> = {}
-  reportes.forEach(r => {
+  reportesFiltrados.forEach(r => {
     if (r.red) redesMap[r.red] = (redesMap[r.red] || 0) + 1
   })
   const redesData = Object.entries(redesMap).sort((a, b) => b[1] - a[1])
@@ -82,6 +88,30 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
 
   return (
     <div className="space-y-4 pb-6">
+
+      {/* ── Filtro por red (solo para roles con acceso total, no pastor_red) ── */}
+      {!esPastorDeRed && redesDisponibles.length > 0 && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-xs text-gray-400 font-medium">Filtrar por red:</span>
+          <button
+            onClick={() => setRedFiltro('todas')}
+            className="text-xs px-3 py-1.5 rounded-full border transition-colors font-medium"
+            style={redFiltro === 'todas' ? { background: PRIMARY, color: 'white', borderColor: PRIMARY } : { borderColor: '#E5E7EB', color: '#6B7280' }}
+          >
+            Todas
+          </button>
+          {redesDisponibles.map(red => (
+            <button
+              key={red}
+              onClick={() => setRedFiltro(red)}
+              className="text-xs px-3 py-1.5 rounded-full border transition-colors font-medium"
+              style={redFiltro === red ? { background: PRIMARY, color: 'white', borderColor: PRIMARY } : { borderColor: '#E5E7EB', color: '#6B7280' }}
+            >
+              Red {red}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* ── Resumen narrativo ── */}
       <div className="rounded-2xl px-4 py-4" style={{ background: LIGHT }}>
