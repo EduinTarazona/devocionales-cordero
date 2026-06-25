@@ -171,9 +171,6 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
                     </div>
                   ))}
                 </div>
-                <a href="/admin?vista=usuarios" className="text-xs text-teal font-medium block pt-1">
-                  Asignarles su red →
-                </a>
               </div>
             )}
 
