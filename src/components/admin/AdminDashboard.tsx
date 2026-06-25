@@ -37,6 +37,7 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
   const verEconomico = puedeVerEconomico(rol)
   const esAccesoTotal = ['admin', 'pastor', 'pastor_general', 'plan_de_vida'].includes(rol)
   const totalPersonas = reportesSemana.reduce((s, r) => s + (r.personas_participaron ?? 0), 0)
+  const redesActivas = Array.from(new Set(reportesSemana.map(r => r.red).filter(Boolean))).sort()
   const ofrendaPorMoneda: Record<string, number> = {}
   reportesSemana.filter(r => r.hubo_ofrenda && r.monto_ofrenda).forEach(r => {
     const moneda = r.moneda_ofrenda ?? 'USD'
@@ -85,6 +86,22 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
                 </div>
               ))}
             </div>
+
+            {redesActivas.length > 0 && (
+              <div className="card flex items-center gap-3 py-3 flex-wrap">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-lg font-extrabold text-primary">{redesActivas.length}</span>
+                  <span className="text-xs text-gray-500">{redesActivas.length === 1 ? 'red activa' : 'redes activas'} esta semana</span>
+                </div>
+                <div className="flex gap-1.5 flex-wrap">
+                  {redesActivas.map(red => (
+                    <span key={red} className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: '#EBEBF8', color: '#3B3B8E' }}>
+                      Red {red}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {verEconomico && hayOfrenda && (
               <div className="card border-teal border space-y-3">
