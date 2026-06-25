@@ -87,9 +87,6 @@ export default function EditarDevocionalForm({ devocional, onGuardado }: { devoc
     <div className="card space-y-5">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-gray-900">Editar devocional</h2>
-        <span className="badge bg-primary-light text-primary text-xs">
-          {devocional.tipo === 'familiar' ? 'Familiar' : devocional.tipo === 'grupal' ? 'Grupal' : 'Empresarial'}
-        </span>
       </div>
 
       {/* Identificación */}
@@ -98,14 +95,6 @@ export default function EditarDevocionalForm({ devocional, onGuardado }: { devoc
         {campo('Serie', 'serie', false, false, 'Ej: Carácter Cristiano: Fruto del Espíritu')}
         {campo('Semana', 'semana', false, true)}
         {campo('Título', 'titulo', false, true)}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
-          <select value={form.tipo} onChange={e => set('tipo', e.target.value)} className="input">
-            <option value="familiar">Familiar</option>
-            <option value="grupal">Grupal</option>
-            <option value="empresarial">Empresarial</option>
-          </select>
-        </div>
       </div>
 
       {/* A) Leamos Juntos */}

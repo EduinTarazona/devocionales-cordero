@@ -111,14 +111,6 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
           <p className="text-xs text-gray-400 mt-1">Calculada automáticamente. Puedes editarla si es necesario.</p>
         </div>
         {campo('Título', 'titulo', false, true)}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
-          <select value={form.tipo} onChange={e => set('tipo', e.target.value)} className="input">
-            <option value="familiar">Familiar</option>
-            <option value="grupal">Grupal</option>
-            <option value="empresarial">Empresarial</option>
-          </select>
-        </div>
       </div>
 
       {/* A) Leamos Juntos */}
