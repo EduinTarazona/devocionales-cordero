@@ -91,25 +91,19 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
 
       {/* ── Filtro por red (solo para roles con acceso total, no pastor_red) ── */}
       {!esPastorDeRed && redesDisponibles.length > 0 && (
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs text-gray-400 font-medium">Filtrar por red:</span>
-          <button
-            onClick={() => setRedFiltro('todas')}
-            className="text-xs px-3 py-1.5 rounded-full border transition-colors font-medium"
-            style={redFiltro === 'todas' ? { background: PRIMARY, color: 'white', borderColor: PRIMARY } : { borderColor: '#E5E7EB', color: '#6B7280' }}
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-400 font-medium flex-shrink-0">Filtrar por red:</span>
+          <select
+            value={redFiltro}
+            onChange={e => setRedFiltro(e.target.value)}
+            className="input text-sm py-1.5"
+            style={{ borderColor: redFiltro !== 'todas' ? PRIMARY : undefined }}
           >
-            Todas
-          </button>
-          {redesDisponibles.map(red => (
-            <button
-              key={red}
-              onClick={() => setRedFiltro(red)}
-              className="text-xs px-3 py-1.5 rounded-full border transition-colors font-medium"
-              style={redFiltro === red ? { background: PRIMARY, color: 'white', borderColor: PRIMARY } : { borderColor: '#E5E7EB', color: '#6B7280' }}
-            >
-              Red {red}
-            </button>
-          ))}
+            <option value="todas">Todas las redes</option>
+            {redesDisponibles.map(red => (
+              <option key={red} value={red}>Red {red}</option>
+            ))}
+          </select>
         </div>
       )}
 
