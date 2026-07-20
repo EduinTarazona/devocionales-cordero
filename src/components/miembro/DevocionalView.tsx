@@ -182,8 +182,7 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
                 <img
                   src={devocional.imagen_url}
                   alt="Ilustración del devocional"
-                  className="rounded-2xl shadow-md"
-                  style={{ float: 'right', width: 210, height: 'auto', marginLeft: 18, marginBottom: 8 }}
+                  className="rounded-2xl shadow-md w-full h-auto mb-4 sm:w-[290px] sm:float-right sm:ml-4 sm:mb-2"
                 />
               )}
               {(() => {

@@ -225,7 +225,7 @@ export async function GET() {
       float: right;
       margin-left: 14px;
       margin-bottom: 8px;
-      width: 185px;
+      width: 250px;
       height: auto;
       border-radius: 10px;
     }
