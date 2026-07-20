@@ -229,6 +229,13 @@ export async function GET() {
       height: auto;
       border-radius: 10px;
     }
+    /* Imagen panoramica: a lo ancho, arriba del texto */
+    .contenido-img.ancha {
+      float: none;
+      display: block;
+      width: 100%;
+      margin: 0 0 12px 0;
+    }
     .contenido-wrap p {
       font-family: 'Lora', Georgia, serif;
       font-size: 13.5px;
@@ -350,7 +357,7 @@ export async function GET() {
 
     ${contenidoParrafos.length > 0 ? `
     <div class="contenido-wrap clearfix">
-      ${d.imagen_url ? `<img class="contenido-img" src="${d.imagen_url}" alt="Ilustración" />` : ''}
+      ${d.imagen_url ? `<img class="contenido-img" src="${d.imagen_url}" alt="Ilustración" onload="if(this.naturalWidth>this.naturalHeight*1.25)this.classList.add('ancha')" />` : ''}
       ${contenidoParrafos.map(p => `<p>${escHtml(p)}</p>`).join('')}
     </div>
     ` : ''}

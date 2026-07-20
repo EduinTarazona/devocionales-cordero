@@ -61,6 +61,8 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
   const [modalAbierto, setModalAbierto] = useState(false)
   const [modoEditar, setModoEditar] = useState(false)
   const [reportes, setReportes] = useState<Record<string, MiReporte>>(reportesPorTipo)
+  // Imagen ancha (panoramica) → arriba a lo ancho; cuadrada/vertical → flotada a la derecha
+  const [imagenAncha, setImagenAncha] = useState(false)
 
   const reporteActual = reportes[tipoSeleccionado] ?? null
   const yaReporto = !!reporteActual
@@ -182,7 +184,13 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
                 <img
                   src={devocional.imagen_url}
                   alt="Ilustración del devocional"
-                  className="rounded-2xl shadow-md w-full h-auto mb-4 sm:w-[290px] sm:float-right sm:ml-4 sm:mb-2"
+                  onLoad={e => {
+                    const im = e.currentTarget
+                    setImagenAncha(im.naturalWidth > im.naturalHeight * 1.25)
+                  }}
+                  className={imagenAncha
+                    ? 'rounded-2xl shadow-md w-full h-auto mb-4'
+                    : 'rounded-2xl shadow-md w-full h-auto mb-4 sm:w-[290px] sm:float-right sm:ml-4 sm:mb-2'}
                 />
               )}
               {(() => {
