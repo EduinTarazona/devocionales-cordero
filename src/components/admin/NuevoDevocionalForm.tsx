@@ -62,7 +62,7 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
     await supabase.from('devocionales').update({ activo: false }).eq('activo', true)
     const { error } = await supabase.from('devocionales').insert({ ...form, imagen_url, activo: true })
     setGuardando(false)
-    if (error) { setError('Error al publicar. Intenta de nuevo.'); return }
+    if (error) { setError(`Error al publicar: ${error.message}`); return }
     onPublicado()
   }
 

@@ -99,7 +99,7 @@ export default function ReporteModal({ devocionalId, userId, tipo, reporteExiste
       })
 
     setEnviando(false)
-    if (err) { setError('Error al enviar el reporte. Intenta de nuevo.'); return }
+    if (err) { setError(`Error al enviar el reporte: ${err.message}`); return }
 
     onSuccess({
       ...datos,

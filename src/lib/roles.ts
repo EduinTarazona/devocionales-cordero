@@ -16,7 +16,7 @@ export const ROLES_ADMIN = [
 
 export const ROLES_VER_ECONOMICO = [
   'admin', 'pastor',
-  'pastor_general',
+  'pastor_general', 'plan_de_vida',
 ]
 
 export function esAdmin(rol: string) {

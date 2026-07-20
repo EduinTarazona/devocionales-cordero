@@ -226,8 +226,7 @@ export async function GET() {
       margin-left: 14px;
       margin-bottom: 8px;
       width: 185px;
-      height: 185px;
-      object-fit: cover;
+      height: auto;
       border-radius: 10px;
     }
     .contenido-wrap p {
@@ -308,7 +307,7 @@ export async function GET() {
         <img src="/logo-casasvida.png.png" alt="Logo" />
       </div>
       <div class="header-center">
-        <div class="iglesia">Centro Cristiano Misión Global<br/>"San Cristóbal"</div>
+        <div class="iglesia">Centro Cristiano Visión Global<br/>"San Cristóbal"</div>
         <div class="depto">Departamento de Familia</div>
         <div class="casas">Casas de Vida Familiar</div>
       </div>
