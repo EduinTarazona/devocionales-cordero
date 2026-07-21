@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { puedeVerEconomico, esPastorRed } from '@/lib/roles'
 import { displayRed } from '@/lib/redes'
 
-type Props = { reportes: any[]; totalMiembros: number; rol?: string; redAsignada?: string | null }
+type Casa = { id: string; nombre: string; red: string | null; activa: boolean }
+type Props = { reportes: any[]; totalMiembros: number; rol?: string; redAsignada?: string | null; casas?: Casa[] }
 
 const PRIMARY = '#3B3B8E'
 const ORANGE  = '#F7941D'
@@ -20,7 +21,7 @@ function simboloMoneda(moneda: string | null) {
   return '$'
 }
 
-export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', redAsignada }: Props) {
+export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', redAsignada, casas }: Props) {
   const verEconomico = puedeVerEconomico(rol)
   const esPastorDeRed = esPastorRed(rol)
 
@@ -60,6 +61,22 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
   })
   const redesData = Object.entries(redesMap).sort((a, b) => b[1] - a[1])
   const maxRed = redesData.length > 0 ? redesData[0][1] : 1
+
+  // ── Casas agrupadas por red/depto (activas = reportaron esta semana) ──
+  const SIN_RED = '__sin_red__'
+  const casasPorRed: Record<string, Casa[]> = {}
+  ;(casas ?? []).forEach(c => {
+    const clave = c.red ?? SIN_RED
+    if (!casasPorRed[clave]) casasPorRed[clave] = []
+    casasPorRed[clave].push(c)
+  })
+  const gruposCasas = Object.entries(casasPorRed)
+    .filter(([clave]) => redFiltro === 'todas' || clave === redFiltro)
+    .sort((a, b) => {
+      if (a[0] === SIN_RED) return 1
+      if (b[0] === SIN_RED) return -1
+      return a[0].localeCompare(b[0], 'es', { numeric: true })
+    })
 
   // ── Donut ──
   const R = 44, CX = 56, CY = 56
@@ -305,6 +322,54 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* ── Casas por red: activas y no activas ── */}
+      {gruposCasas.length > 0 && (
+        <div className="card">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Casas por red</p>
+          <p className="text-[11px] text-gray-400 mb-3">
+            Todas las casas registradas, agrupadas por su red o departamento.
+            <span className="font-semibold" style={{ color: TEAL }}> Verde</span> = reportó esta semana ·{' '}
+            <span className="font-semibold text-gray-500">Gris</span> = aún no reporta.
+          </p>
+          <div className="space-y-4">
+            {gruposCasas.map(([clave, lista]) => {
+              const activas = lista.filter(c => c.activa)
+              const noActivas = lista.filter(c => !c.activa)
+              return (
+                <div key={clave}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <p className="text-xs font-bold" style={{ color: PRIMARY }}>
+                      {clave === SIN_RED ? 'Sin red conocida' : displayRed(clave)}
+                    </p>
+                    <p className="text-[10px] text-gray-400">
+                      {activas.length} de {lista.length} {lista.length === 1 ? 'casa activa' : 'casas activas'}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {activas.map(c => (
+                      <span key={c.id} className="text-[11px] font-semibold px-2 py-1 rounded-full"
+                        style={{ background: '#CCFBF1', color: TEAL }}>
+                        ✓ {c.nombre}
+                      </span>
+                    ))}
+                    {noActivas.map(c => (
+                      <span key={c.id} className="text-[11px] px-2 py-1 rounded-full bg-gray-100 text-gray-400">
+                        {c.nombre}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          {gruposCasas.some(([clave]) => clave === SIN_RED) && (
+            <p className="text-[10px] text-gray-400 italic mt-3 pt-2 border-t border-gray-50">
+              Las casas "sin red conocida" aún no han reportado con el nuevo selector — al enviar su primer reporte quedarán en su red o departamento.
+            </p>
+          )}
         </div>
       )}
 

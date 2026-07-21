@@ -8,6 +8,7 @@ import { displayRol, puedeVerEconomico } from '@/lib/roles'
 import { displayRed } from '@/lib/redes'
 
 type MiembroPendiente = { id: string; nombre: string | null; email: string | null }
+type Casa = { id: string; nombre: string; red: string | null; activa: boolean }
 type Vista = 'resumen' | 'nuevo' | 'editar' | 'reportes' | 'usuarios'
 
 type NuevoRegistro = { id: string; nombre: string | null; email: string | null; created_at: string }
@@ -20,6 +21,7 @@ type Props = {
   ofrendaMesPorMoneda: Record<string, number>
   noReportaron: MiembroPendiente[]
   nuevosRegistros: NuevoRegistro[]
+  casas?: Casa[]
   rol: string
   redAsignada?: string | null
   vista: Vista
@@ -34,7 +36,7 @@ const TITULO_VISTA: Record<Vista, string> = {
   usuarios: 'Usuarios',
 }
 
-export default function AdminDashboard({ user, devocionalActivo, reportesSemana, totalMiembros, ofrendaMesPorMoneda, noReportaron, nuevosRegistros, rol, redAsignada, vista, previewRol }: Props) {
+export default function AdminDashboard({ user, devocionalActivo, reportesSemana, totalMiembros, ofrendaMesPorMoneda, noReportaron, nuevosRegistros, casas, rol, redAsignada, vista, previewRol }: Props) {
   const verEconomico = puedeVerEconomico(rol)
   const esAccesoTotal = ['admin', 'pastor', 'pastor_general', 'plan_de_vida'].includes(rol)
   const totalPersonas = reportesSemana.reduce((s, r) => s + (r.personas_participaron ?? 0), 0)
@@ -265,7 +267,7 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
             <a href="/admin?vista=nuevo" className="btn-primary text-sm px-4 py-2 inline-block">Publicar uno nuevo</a>
           </div>
         )}
-        {vista === 'reportes' && <ReportesLista reportes={reportesSemana} totalMiembros={totalMiembros} rol={rol} redAsignada={redAsignada} />}
+        {vista === 'reportes' && <ReportesLista reportes={reportesSemana} totalMiembros={totalMiembros} rol={rol} redAsignada={redAsignada} casas={casas} />}
         {vista === 'usuarios' && <UsuariosLista currentUserId={user.id} />}
 
       </div>

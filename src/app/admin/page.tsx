@@ -117,6 +117,38 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
     .gte('created_at', inicioSemana.toISOString())
     .order('created_at', { ascending: false })
 
+  // ── Casas por red: todas las casas con su ultima red/depto conocido ──
+  // La red no vive en el perfil: se toma del reporte mas reciente de cada casa.
+  const { data: todasCasas } = await supabase
+    .from('perfiles')
+    .select('id, nombre, apellidos_familia, email')
+    .eq('activo', true)
+    .in('rol', ['miembro', 'lider'])
+    .order('nombre')
+
+  const { data: historialRed } = await supabase
+    .from('reportes')
+    .select('user_id, red, created_at')
+    .not('red', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(2000)
+
+  const redPorUsuario: Record<string, string> = {}
+  for (const h of historialRed ?? []) {
+    if (h.red && !redPorUsuario[h.user_id]) redPorUsuario[h.user_id] = h.red
+  }
+
+  const idsReportaronSemana = new Set((reportesSemana ?? []).map(r => r.user_id))
+  let casas = (todasCasas ?? []).map(c => ({
+    id: c.id,
+    nombre: c.apellidos_familia ? `Flia. ${c.apellidos_familia}` : (c.nombre ?? c.email ?? 'Sin nombre'),
+    red: redPorUsuario[c.id] ?? null,
+    activa: idsReportaronSemana.has(c.id),
+  }))
+  if (rol === 'pastor_red' && redAsignada) {
+    casas = casas.filter(c => c.red === redAsignada)
+  }
+
   return (
     <AdminDashboard
       user={{ id: user.id, nombre: user.user_metadata?.full_name, email: user.email! }}
@@ -126,6 +158,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
       ofrendaMesPorMoneda={ofrendaMesPorMoneda}
       noReportaron={noReportaron}
       nuevosRegistros={nuevosRegistros ?? []}
+      casas={casas}
       rol={rol}
       redAsignada={redAsignada}
       vista={vista}
