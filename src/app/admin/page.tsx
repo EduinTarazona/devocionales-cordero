@@ -18,6 +18,12 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
   const rolReal = await getMyRole(supabase, user.id)
   if (!esAdmin(rolReal)) redirect('/devocional')
 
+  // Publicar, editar y usuarios: solo roles con acceso total
+  const accesoTotal = ['admin', 'pastor', 'pastor_general', 'plan_de_vida'].includes(rolReal)
+  if (!accesoTotal && (vista === 'nuevo' || vista === 'editar' || vista === 'usuarios')) {
+    redirect('/admin')
+  }
+
   const previewRol = searchParams?.preview_rol && ROLES_PREVIEW_VALIDOS.includes(searchParams.preview_rol)
     ? searchParams.preview_rol
     : null
