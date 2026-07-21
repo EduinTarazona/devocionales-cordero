@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { puedeVerEconomico, esPastorRed } from '@/lib/roles'
+import { displayRed } from '@/lib/redes'
 
 type Props = { reportes: any[]; totalMiembros: number; rol?: string; redAsignada?: string | null }
 
@@ -92,16 +93,16 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
       {/* ── Filtro por red (solo para roles con acceso total, no pastor_red) ── */}
       {!esPastorDeRed && redesDisponibles.length > 0 && (
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-400 font-medium flex-shrink-0">Filtrar por red:</span>
+          <span className="text-xs text-gray-400 font-medium flex-shrink-0">Filtrar por red o depto:</span>
           <select
             value={redFiltro}
             onChange={e => setRedFiltro(e.target.value)}
             className="input text-sm py-1.5"
             style={{ borderColor: redFiltro !== 'todas' ? PRIMARY : undefined }}
           >
-            <option value="todas">Todas las redes</option>
+            <option value="todas">Todas</option>
             {redesDisponibles.map(red => (
-              <option key={red} value={red}>Red {red}</option>
+              <option key={red} value={red}>{displayRed(red)}</option>
             ))}
           </select>
         </div>
@@ -246,7 +247,7 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
                   <p className="text-sm font-semibold text-gray-800">{r.nombre_grupo ?? 'Sin nombre'}</p>
                   <p className="text-[11px] text-gray-400">
                     Líder: {r.perfiles?.nombre ?? r.perfiles?.email ?? '—'}
-                    {r.red ? ` · Red ${r.red}` : ''}
+                    {r.red ? ` · ${displayRed(r.red)}` : ''}
                   </p>
                 </div>
                 <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ background: '#FEF3E2', color: ORANGE }}>
@@ -272,7 +273,7 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
                   <p className="text-sm font-semibold text-gray-800">{r.nombre_empresa ?? 'Sin nombre'}</p>
                   <p className="text-[11px] text-gray-400">
                     Líder: {r.perfiles?.nombre ?? r.perfiles?.email ?? '—'}
-                    {r.red ? ` · Red ${r.red}` : ''}
+                    {r.red ? ` · ${displayRed(r.red)}` : ''}
                   </p>
                 </div>
                 <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ background: '#CCFBF1', color: TEAL }}>
@@ -287,14 +288,14 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
       {/* ── Redes más activas ── */}
       {redesData.length > 0 && (
         <div className="card">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Redes más activas</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Redes y departamentos más activos</p>
           <p className="text-[11px] text-gray-400 mb-3">
-            Cantidad de reportes recibidos por red, contando todos los tipos de devocional.
+            Cantidad de reportes recibidos por red o departamento, contando todos los tipos de devocional.
           </p>
           <div className="space-y-2">
             {redesData.map(([red, total]) => (
               <div key={red} className="flex items-center gap-2">
-                <span className="text-[11px] text-gray-500 w-14 flex-shrink-0">Red {red}</span>
+                <span className="text-[11px] text-gray-500 w-24 flex-shrink-0 truncate" title={displayRed(red)}>{displayRed(red)}</span>
                 <div className="flex-1 h-5 bg-gray-100 rounded-full overflow-hidden">
                   <div className="h-full rounded-full flex items-center justify-end pr-2"
                     style={{ width: `${Math.round((total / maxRed) * 100)}%`, background: `linear-gradient(90deg, ${PRIMARY}, #5B5BBE)` }}>
@@ -354,7 +355,7 @@ export default function ReportesLista({ reportes, totalMiembros, rol = 'admin', 
                     {tipo === 'empresarial' && r.nombre_empresa && (
                       <p className="text-[11px] text-gray-500">🏢 {r.nombre_empresa}</p>
                     )}
-                    {r.red && <p className="text-[11px] text-gray-500">🔴 Red {r.red}</p>}
+                    {r.red && <p className="text-[11px] text-gray-500">🔴 {displayRed(r.red)}</p>}
                   </div>
                   {r.nota && <p className="text-[11px] text-gray-500 italic truncate">"{r.nota}"</p>}
                 </div>

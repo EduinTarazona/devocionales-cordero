@@ -5,6 +5,7 @@ import ReportesLista from './ReportesLista'
 import UsuariosLista from './UsuariosLista'
 import AppShell from '../AppShell'
 import { displayRol, puedeVerEconomico } from '@/lib/roles'
+import { displayRed } from '@/lib/redes'
 
 type MiembroPendiente = { id: string; nombre: string | null; email: string | null }
 type Vista = 'resumen' | 'nuevo' | 'editar' | 'reportes' | 'usuarios'
@@ -91,12 +92,12 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
               <div className="card flex items-center gap-3 py-3 flex-wrap">
                 <div className="flex items-center gap-1.5">
                   <span className="text-lg font-extrabold text-primary">{redesActivas.length}</span>
-                  <span className="text-xs text-gray-500">{redesActivas.length === 1 ? 'red activa' : 'redes activas'} esta semana</span>
+                  <span className="text-xs text-gray-500">{redesActivas.length === 1 ? 'red o depto activo' : 'redes y deptos activos'} esta semana</span>
                 </div>
                 <div className="flex gap-1.5 flex-wrap">
                   {redesActivas.map(red => (
                     <span key={red} className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: '#EBEBF8', color: '#3B3B8E' }}>
-                      Red {red}
+                      {displayRed(red)}
                     </span>
                   ))}
                 </div>

@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { REDES, DEPARTAMENTOS } from '@/lib/redes'
 
 type DatosReporte = {
   adultos: number | null
@@ -69,6 +70,10 @@ export default function ReporteModal({ devocionalId, userId, tipo, reporteExiste
     }
     if (tipo === 'empresarial' && !nombreEmpresa.trim()) {
       setError('Por favor ingresa el nombre de la empresa.')
+      return
+    }
+    if (!esEdicion && !red) {
+      setError('Por favor selecciona tu red o departamento.')
       return
     }
 
@@ -177,14 +182,24 @@ export default function ReporteModal({ devocionalId, userId, tipo, reporteExiste
           </div>
         )}
 
-        {/* Red */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Red <span className="text-gray-400 font-normal">(número de red)</span>
-          </label>
-          <input type="text" placeholder="Ej: 1, 2, 3..."
-            value={red} onChange={e => setRed(e.target.value)} className="input" />
-        </div>
+        {/* Red o Departamento */}
+        {!esEdicion && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Red o Departamento <span className="text-red-400">*</span>
+            </label>
+            <select value={red} onChange={e => setRed(e.target.value)} className="input">
+              <option value="">Selecciona una opción...</option>
+              <optgroup label="Redes">
+                {REDES.map(r => <option key={r} value={r}>Red {r}</option>)}
+              </optgroup>
+              <optgroup label="Departamentos">
+                {DEPARTAMENTOS.map(d => <option key={d} value={d}>{d}</option>)}
+              </optgroup>
+            </select>
+            <p className="text-xs text-gray-400 mt-1">Elige tu red o tu departamento (una sola opción).</p>
+          </div>
+        )}
 
         {/* Ofrenda */}
         <div className="space-y-3">
