@@ -16,19 +16,27 @@ export default async function DevocionalPage({ searchParams }: { searchParams?: 
     : null
   const rol = previewRol ?? rolReal
 
-  const { data: devocional } = await supabase
+  // Puede haber un devocional activo por cada tipo (familiar/grupal/empresarial)
+  const { data: activos } = await supabase
     .from('devocionales')
     .select('*')
     .eq('activo', true)
     .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle()
 
-  const { data: reportes } = devocional
+  const devocionalesPorTipo: Record<string, any> = {}
+  for (const d of activos ?? []) {
+    const t = d.tipo ?? 'familiar'
+    if (!devocionalesPorTipo[t]) devocionalesPorTipo[t] = d
+  }
+  // El familiar es el principal; si no hay, se toma el mas reciente
+  const devocional = devocionalesPorTipo['familiar'] ?? (activos?.[0] ?? null)
+
+  const idsActivos = (activos ?? []).map(d => d.id)
+  const { data: reportes } = idsActivos.length > 0
     ? await supabase
         .from('reportes')
         .select('id, adultos, ninos, hubo_ofrenda, monto_ofrenda, moneda_ofrenda, tipo, nombre_grupo, nombre_empresa')
-        .eq('devocional_id', devocional.id)
+        .in('devocional_id', idsActivos)
         .eq('user_id', user.id)
     : { data: [] }
 
@@ -42,6 +50,7 @@ export default async function DevocionalPage({ searchParams }: { searchParams?: 
       user={{ id: user.id, email: user.email!, nombre: user.user_metadata?.full_name }}
       rol={rol}
       devocional={devocional}
+      devocionalesPorTipo={devocionalesPorTipo}
       reportesPorTipo={reportesPorTipo}
       previewRol={previewRol}
     />

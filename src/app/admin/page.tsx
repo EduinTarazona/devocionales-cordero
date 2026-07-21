@@ -37,13 +37,14 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
     .maybeSingle()
   const redAsignada = miPerfil?.red_asignada ?? null
 
-  const { data: devocionalActivo } = await supabase
+  // Puede haber un devocional activo por tipo; el familiar es el principal del panel
+  const { data: devocionalesActivos } = await supabase
     .from('devocionales')
     .select('*')
     .eq('activo', true)
     .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle()
+  const devocionalActivo = (devocionalesActivos ?? []).find(d => (d.tipo ?? 'familiar') === 'familiar')
+    ?? (devocionalesActivos?.[0] ?? null)
 
   const inicioSemana = new Date()
   inicioSemana.setDate(inicioSemana.getDate() - inicioSemana.getDay())

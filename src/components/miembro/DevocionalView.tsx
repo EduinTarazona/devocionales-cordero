@@ -19,6 +19,7 @@ type Props = {
   user: { id: string; email: string; nombre?: string }
   rol: string
   devocional: any
+  devocionalesPorTipo?: Record<string, any>
   reportesPorTipo: Record<string, MiReporte>
   previewRol?: string | null
 }
@@ -56,7 +57,7 @@ const TIPOS = [
   },
 ]
 
-export default function DevocionalView({ user, rol, devocional, reportesPorTipo, previewRol }: Props) {
+export default function DevocionalView({ user, rol, devocional, devocionalesPorTipo, reportesPorTipo, previewRol }: Props) {
   const [tipoSeleccionado, setTipoSeleccionado] = useState<'familiar' | 'grupal' | 'empresarial'>('familiar')
   const [modalAbierto, setModalAbierto] = useState(false)
   const [modoEditar, setModoEditar] = useState(false)
@@ -68,6 +69,9 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
   const yaReporto = !!reporteActual
   // El pastor de red no reporta devocional: solo supervisa los reportes de su red
   const puedeReportar = rol !== 'pastor_red'
+  // Devocional del tipo seleccionado; si ese tipo no tiene propio, se usa el familiar
+  const devocionalActual = devocionalesPorTipo?.[tipoSeleccionado] ?? devocional
+  const tieneDevocionalPropio = !!devocionalesPorTipo?.[tipoSeleccionado]
 
   if (!devocional) {
     return (
@@ -123,15 +127,15 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
           {/* Encabezado: serie + semana + PDF */}
           <div className="flex items-start justify-between mb-4">
             <div>
-              {devocional.serie && (
-                <p className="text-[11px] font-semibold text-gray-500">Serie: {devocional.serie}</p>
+              {devocionalActual.serie && (
+                <p className="text-[11px] font-semibold text-gray-500">Serie: {devocionalActual.serie}</p>
               )}
-              {devocional.semana && (
-                <p className="text-[11px] text-gray-400">Semana {devocional.semana}</p>
+              {devocionalActual.semana && (
+                <p className="text-[11px] text-gray-400">Semana {devocionalActual.semana}</p>
               )}
             </div>
             <button
-              onClick={() => window.open('/devocional/pdf', '_blank')}
+              onClick={() => window.open(`/devocional/pdf?tipo=${tipoSeleccionado}`, '_blank')}
               className="flex items-center gap-1.5 text-xs font-semibold text-primary/70 hover:text-primary transition-colors flex-shrink-0"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -141,37 +145,43 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
             </button>
           </div>
 
+          {!tieneDevocionalPropio && tipoSeleccionado !== 'familiar' && devocionalActual && (
+            <p className="text-[11px] text-gray-400 italic mb-2 text-center">
+              Este tipo aún no tiene devocional propio — se muestra el familiar.
+            </p>
+          )}
+
           {/* Título en recuadro azul */}
           <div className="rounded-2xl border-2 mb-8 px-5 py-4 text-center bg-white" style={{ borderColor: '#3B3B8E' }}>
             <h1 className="text-[26px] md:text-[30px] font-extrabold leading-tight" style={{ color: '#3B3B8E' }}>
-              {devocional.titulo}
+              {devocionalActual.titulo}
             </h1>
           </div>
 
           {/* A) Leamos Juntos */}
           <SeccionTitulo emoji="📖" letra="A)" titulo="Leamos Juntos" color="#3B3B8E" />
 
-          {devocional.pasaje && (
+          {devocionalActual.pasaje && (
             <div className="mb-5 relative">
               <span className="absolute -top-4 -left-2 text-[80px] leading-none font-serif select-none" style={{ color: 'rgba(59,59,142,0.12)' }}>
                 &ldquo;
               </span>
               <blockquote className="relative pl-5 border-l-[3px]" style={{ borderColor: 'rgba(59,59,142,0.4)' }}>
                 <p className="text-[16px] md:text-[18px] font-bold text-center text-gray-800 leading-[1.8]" style={{ fontFamily: 'Georgia, serif' }}>
-                  {devocional.pasaje}
+                  {devocionalActual.pasaje}
                 </p>
-                {devocional.referencia && (
+                {devocionalActual.referencia && (
                   <footer className="mt-3 text-sm font-bold text-center not-italic tracking-wide" style={{ color: '#3B3B8E' }}>
-                    {devocional.referencia}
+                    {devocionalActual.referencia}
                   </footer>
                 )}
               </blockquote>
             </div>
           )}
 
-          {devocional.introduccion && (
+          {devocionalActual.introduccion && (
             <p className="text-[15px] text-gray-700 leading-[1.9] mb-6 whitespace-pre-wrap" style={{ fontFamily: 'Georgia, serif' }}>
-              {devocional.introduccion}
+              {devocionalActual.introduccion}
             </p>
           )}
 
@@ -180,11 +190,11 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
           {/* B) Aprendemos en Familia */}
           <SeccionTitulo emoji="👨‍👩‍👧‍👦" letra="B)" titulo="Aprendemos en Familia la verdad de Dios" color="#3B3B8E" />
 
-          {devocional.contenido && (
+          {devocionalActual.contenido && (
             <div className="mb-5">
-              {devocional.imagen_url && (
+              {devocionalActual.imagen_url && (
                 <img
-                  src={devocional.imagen_url}
+                  src={devocionalActual.imagen_url}
                   alt="Ilustración del devocional"
                   onLoad={e => {
                     const im = e.currentTarget
@@ -196,7 +206,7 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
                 />
               )}
               {(() => {
-                const lineas = devocional.contenido.split('\n')
+                const lineas = devocionalActual.contenido.split('\n')
                 const parrafos: string[] = []
                 let actual: string[] = []
                 for (const linea of lineas) {
@@ -218,7 +228,7 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
             </div>
           )}
 
-          {devocional.intercambiemos_ideas && (
+          {devocionalActual.intercambiemos_ideas && (
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-xl">💡</span>
@@ -226,7 +236,7 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
               </div>
               <img src="/Intercambiemos_ideas.png" alt="Intercambiemos ideas" className="w-full rounded-2xl mb-3" style={{ maxHeight: 200, objectFit: 'contain' }} />
               <div className="text-[15px] text-gray-700 leading-[1.9] whitespace-pre-wrap pl-1">
-                {devocional.intercambiemos_ideas}
+                {devocionalActual.intercambiemos_ideas}
               </div>
             </div>
           )}
@@ -236,9 +246,9 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
           {/* C) Tomamos tiempo para agradecer y orar */}
           <SeccionTitulo emoji="🙏" letra="C)" titulo="Tomamos tiempo para agradecer y orar" color="#3B3B8E" />
 
-          {devocional.oracion && (
+          {devocionalActual.oracion && (
             <p className="text-[15px] text-gray-600 leading-[2] italic whitespace-pre-wrap mb-8" style={{ fontFamily: 'Georgia, serif' }}>
-              {devocional.oracion}
+              {devocionalActual.oracion}
             </p>
           )}
 
@@ -338,7 +348,7 @@ export default function DevocionalView({ user, rol, devocional, reportesPorTipo,
 
       {modalAbierto && (
         <ReporteModal
-          devocionalId={devocional.id}
+          devocionalId={devocionalActual.id}
           userId={user.id}
           tipo={tipoSeleccionado}
           reporteExistente={modoEditar ? reporteActual : null}

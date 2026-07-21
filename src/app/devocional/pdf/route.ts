@@ -1,18 +1,23 @@
 import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.redirect(new URL('/login', process.env.NEXT_PUBLIC_SUPABASE_URL))
 
-  const { data: d } = await supabase
+  const tipoParam = new URL(request.url).searchParams.get('tipo') ?? 'familiar'
+
+  const { data: activos } = await supabase
     .from('devocionales')
     .select('*')
     .eq('activo', true)
     .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle()
+
+  // Devocional del tipo pedido; si no tiene propio, el familiar; si no, el mas reciente
+  const d = (activos ?? []).find(x => (x.tipo ?? 'familiar') === tipoParam)
+    ?? (activos ?? []).find(x => (x.tipo ?? 'familiar') === 'familiar')
+    ?? (activos?.[0] ?? null)
 
   if (!d) return NextResponse.redirect('/devocional')
 

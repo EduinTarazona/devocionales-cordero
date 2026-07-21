@@ -59,7 +59,7 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
       imagen_url = urlData.publicUrl
     }
 
-    await supabase.from('devocionales').update({ activo: false }).eq('activo', true)
+    await supabase.from('devocionales').update({ activo: false }).eq('activo', true).eq('tipo', form.tipo)
     const { error } = await supabase.from('devocionales').insert({ ...form, imagen_url, activo: true })
     setGuardando(false)
     if (error) { setError(`Error al publicar: ${error.message}`); return }
@@ -93,6 +93,30 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
   return (
     <div className="card space-y-5">
       <h2 className="font-bold text-gray-900">Nuevo devocional</h2>
+
+      {/* Tipo de devocional */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Tipo de devocional <span className="text-red-400">*</span>
+        </label>
+        <div className="flex gap-2">
+          {([['familiar', '🏠 Familiar'], ['grupal', '👥 Grupal'], ['empresarial', '🏢 Empresarial']] as const).map(([val, label]) => (
+            <button
+              key={val}
+              type="button"
+              onClick={() => set('tipo', val)}
+              className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition-colors ${
+                form.tipo === val ? 'bg-primary text-white border-primary' : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-gray-400 mt-1">
+          Cada tipo tiene su propio devocional. Publicar uno nuevo solo reemplaza al anterior del mismo tipo.
+        </p>
+      </div>
 
       {/* Identificación */}
       <div className="space-y-3">
@@ -176,7 +200,7 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
       </button>
 
       <p className="text-xs text-gray-400 text-center">
-        Al publicar, el devocional anterior quedará inactivo automáticamente.
+        Al publicar, el devocional anterior del mismo tipo quedará inactivo automáticamente.
       </p>
     </div>
   )
