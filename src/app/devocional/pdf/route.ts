@@ -227,19 +227,11 @@ export async function GET(request: NextRequest) {
     /* ── CONTENIDO (float image) ── */
     .contenido-wrap { margin-bottom: 18px; overflow: hidden; }
     .contenido-img {
-      float: right;
-      margin-left: 14px;
-      margin-bottom: 8px;
-      width: 250px;
-      height: auto;
-      border-radius: 10px;
-    }
-    /* Imagen panoramica: a lo ancho, arriba del texto */
-    .contenido-img.ancha {
-      float: none;
       display: block;
       width: 100%;
+      height: auto;
       margin: 0 0 12px 0;
+      border-radius: 10px;
     }
     .contenido-wrap p {
       font-family: 'Lora', Georgia, serif;
@@ -362,7 +354,7 @@ export async function GET(request: NextRequest) {
 
     ${contenidoParrafos.length > 0 ? `
     <div class="contenido-wrap clearfix">
-      ${d.imagen_url ? `<img class="contenido-img" src="${d.imagen_url}" alt="Ilustración" onload="if(this.naturalWidth>this.naturalHeight*1.25)this.classList.add('ancha')" />` : ''}
+      ${d.imagen_url ? `<img class="contenido-img" src="${d.imagen_url}" alt="Ilustración" />` : ''}
       ${contenidoParrafos.map(p => `<p>${escHtml(p)}</p>`).join('')}
     </div>
     ` : ''}
