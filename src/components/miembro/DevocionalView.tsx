@@ -194,7 +194,7 @@ export default function DevocionalView({ user, rol, devocional, devocionalesPorT
                 <img
                   src={devocionalActual.imagen_url}
                   alt="Ilustración del devocional"
-                  className="rounded-2xl shadow-md block w-full h-auto mb-4 sm:w-3/4 sm:mx-auto"
+                  className="rounded-2xl shadow-md block w-full h-auto mb-4"
                 />
               )}
               {(() => {

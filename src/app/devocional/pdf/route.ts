@@ -228,9 +228,9 @@ export async function GET(request: NextRequest) {
     .contenido-wrap { margin-bottom: 18px; overflow: hidden; }
     .contenido-img {
       display: block;
-      width: 75%;
+      width: 100%;
       height: auto;
-      margin: 0 auto 12px auto;
+      margin: 0 0 12px 0;
       border-radius: 10px;
     }
     .contenido-wrap p {
