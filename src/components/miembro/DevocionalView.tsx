@@ -65,8 +65,6 @@ export default function DevocionalView({ user, rol, devocional, devocionalesPorT
 
   const reporteActual = reportes[tipoSeleccionado] ?? null
   const yaReporto = !!reporteActual
-  // El pastor de red no reporta devocional: solo supervisa los reportes de su red
-  const puedeReportar = rol !== 'pastor_red'
   // Devocional del tipo seleccionado; si ese tipo no tiene propio, se usa el familiar
   const devocionalActual = devocionalesPorTipo?.[tipoSeleccionado] ?? devocional
   const tieneDevocionalPropio = !!devocionalesPorTipo?.[tipoSeleccionado]
@@ -249,14 +247,7 @@ export default function DevocionalView({ user, rol, devocional, devocionalesPorT
           </p>
 
           {/* Botón / estado de reporte por tipo */}
-          {!puedeReportar ? (
-            <div className="rounded-2xl border border-gray-200 bg-white text-center py-5 px-5 mb-6">
-              <p className="text-sm text-gray-500">
-                Como Pastor de Red no envías reportes — puedes ver los de tu red en el{' '}
-                <a href="/admin?vista=reportes" className="text-primary font-semibold underline">panel de reportes</a>.
-              </p>
-            </div>
-          ) : yaReporto ? (
+          {yaReporto ? (
             <div className="rounded-2xl border-2 border-teal bg-white text-center py-6 space-y-2 shadow-sm mb-6 px-5">
               <div className="text-4xl mb-1">✅</div>
               <p className="font-bold text-teal text-base">

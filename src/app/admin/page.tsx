@@ -40,7 +40,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
   // En vista previa como pastor_red, se simula una red concreta (Red 1 por defecto)
   if (previewRol === 'pastor_red') {
     const previewRed = searchParams?.preview_red
-    redAsignada = previewRed && /^[1-6]$/.test(previewRed) ? previewRed : '1'
+    redAsignada = previewRed && /^[1-7]$/.test(previewRed) ? previewRed : '1'
   }
 
   // Puede haber un devocional activo por tipo; el familiar es el principal del panel

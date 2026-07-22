@@ -104,10 +104,11 @@ const ITEMS_SUPERVISOR: Item[] = [
   { href: '/historial', label: 'Mi historial', icon: iconClock, match: p => p.startsWith('/historial') },
 ]
 
-// Pastor de Red — solo su red
+// Pastor de Red — su red + reportar su propio devocional
 const ITEMS_PASTOR_RED: Item[] = [
   { href: '/admin', label: 'Resumen', icon: iconChart, match: (p, q) => p === '/admin' && !q.get('vista') },
   { href: '/admin?vista=reportes', label: 'Reportes de mi red', icon: iconList, match: (p, q) => p === '/admin' && q.get('vista') === 'reportes' },
+  { href: '/devocional', label: 'Devocional', icon: iconBook, match: p => p === '/devocional' },
   { href: '/historial', label: 'Mi historial', icon: iconClock, match: p => p.startsWith('/historial') },
 ]
 

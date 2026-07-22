@@ -1,10 +1,10 @@
 /**
  * Redes y departamentos de la iglesia.
- * El campo `red` de un reporte guarda el numero de red ('1'..'6')
+ * El campo `red` de un reporte guarda el numero de red ('1'..'7')
  * o el nombre del departamento — una sola cosa por reporte.
  */
 
-export const REDES = ['1', '2', '3', '4', '5', '6']
+export const REDES = ['1', '2', '3', '4', '5', '6', '7']
 
 export const DEPARTAMENTOS = [
   'Alabanza',

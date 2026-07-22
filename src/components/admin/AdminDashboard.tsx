@@ -5,7 +5,7 @@ import ReportesLista from './ReportesLista'
 import UsuariosLista from './UsuariosLista'
 import AppShell from '../AppShell'
 import { displayRol, puedeVerEconomico } from '@/lib/roles'
-import { displayRed } from '@/lib/redes'
+import { displayRed, REDES } from '@/lib/redes'
 
 type MiembroPendiente = { id: string; nombre: string | null; email: string | null }
 type Casa = { id: string; nombre: string; red: string | null; activa: boolean }
@@ -79,7 +79,7 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
                   }}
                   className="border border-amber-300 bg-white rounded-lg px-2 py-1 text-xs font-semibold text-amber-900"
                 >
-                  {['1', '2', '3', '4', '5', '6'].map(r => (
+                  {REDES.map(r => (
                     <option key={r} value={r}>Red {r}</option>
                   ))}
                 </select>
