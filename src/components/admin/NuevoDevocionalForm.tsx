@@ -60,7 +60,13 @@ export default function NuevoDevocionalForm({ onPublicado }: { onPublicado: () =
     }
 
     await supabase.from('devocionales').update({ activo: false }).eq('activo', true).eq('tipo', form.tipo)
-    const { error } = await supabase.from('devocionales').insert({ ...form, imagen_url, activo: true })
+    let { error } = await supabase.from('devocionales').insert({ ...form, imagen_url, activo: true })
+    if (error) {
+      // Sesion vencida (app abierta varios dias): renovar y reintentar una vez
+      await supabase.auth.refreshSession()
+      await supabase.from('devocionales').update({ activo: false }).eq('activo', true).eq('tipo', form.tipo)
+      ;({ error } = await supabase.from('devocionales').insert({ ...form, imagen_url, activo: true }))
+    }
     setGuardando(false)
     if (error) { setError(`Error al publicar: ${error.message}`); return }
     onPublicado()

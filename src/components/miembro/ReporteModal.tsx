@@ -92,9 +92,9 @@ export default function ReporteModal({ devocionalId, userId, tipo, reporteExiste
       moneda_ofrenda: huboOfrenda ? moneda : null,
     }
 
-    const { error: err } = esEdicion
-      ? await supabase.from('reportes').update(datos).eq('id', reporteExistente!.id)
-      : await supabase.from('reportes').insert({
+    const guardar = () => esEdicion
+      ? supabase.from('reportes').update(datos).eq('id', reporteExistente!.id)
+      : supabase.from('reportes').insert({
         devocional_id: devocionalId,
         user_id: userId,
         tipo,
@@ -102,6 +102,13 @@ export default function ReporteModal({ devocionalId, userId, tipo, reporteExiste
         red: red.trim() || null,
         nota: nota || null,
       })
+
+    let { error: err } = await guardar()
+    if (err) {
+      // Sesion vencida (app abierta varios dias): renovar y reintentar una vez
+      await supabase.auth.refreshSession()
+      ;({ error: err } = await guardar())
+    }
 
     setEnviando(false)
     if (err) { setError(`Error al enviar el reporte: ${err.message}`); return }
