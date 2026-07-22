@@ -190,13 +190,6 @@ export default function DevocionalView({ user, rol, devocional, devocionalesPorT
 
           {devocionalActual.contenido && (
             <div className="mb-5">
-              {devocionalActual.imagen_url && (
-                <img
-                  src={devocionalActual.imagen_url}
-                  alt="Ilustración del devocional"
-                  className="rounded-2xl shadow-md block w-full h-auto mb-4 sm:w-3/4 sm:mx-auto"
-                />
-              )}
               {(() => {
                 const lineas = devocionalActual.contenido.split('\n')
                 const parrafos: string[] = []
@@ -210,13 +203,28 @@ export default function DevocionalView({ user, rol, devocional, devocionalesPorT
                   }
                 }
                 if (actual.length > 0) parrafos.push(actual.join(' '))
-                return parrafos.map((p, i) => (
-                  <p key={i} style={{ fontFamily: 'Georgia, serif', textAlign: 'justify', lineHeight: '1.65', fontSize: 15, color: '#1f2937', marginBottom: 8 }}>
-                    {p}
-                  </p>
-                ))
+
+                const estiloParrafo = { fontFamily: 'Georgia, serif', textAlign: 'justify' as const, lineHeight: '1.65', fontSize: 15, color: '#1f2937', marginBottom: 8 }
+                // La imagen va en el medio del texto, entre dos parrafos
+                const puntoMedio = Math.ceil(parrafos.length / 2)
+                return (
+                  <>
+                    {parrafos.slice(0, puntoMedio).map((p, i) => (
+                      <p key={i} style={estiloParrafo}>{p}</p>
+                    ))}
+                    {devocionalActual.imagen_url && (
+                      <img
+                        src={devocionalActual.imagen_url}
+                        alt="Ilustración del devocional"
+                        className="rounded-2xl shadow-md block w-full h-auto my-5 sm:w-3/4 sm:mx-auto"
+                      />
+                    )}
+                    {parrafos.slice(puntoMedio).map((p, i) => (
+                      <p key={`b-${i}`} style={estiloParrafo}>{p}</p>
+                    ))}
+                  </>
+                )
               })()}
-              <div style={{ clear: 'both' }} />
             </div>
           )}
 
