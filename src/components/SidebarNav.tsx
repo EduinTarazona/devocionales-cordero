@@ -166,9 +166,10 @@ export default function SidebarNav({ user, rol, currentPath, currentSearch, onNa
       <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
         {items.map(item => {
           const activo = item.match(currentPath, params)
-          // En modo preview, preservar el preview_rol en todos los links de admin
+          // En modo preview, preservar preview_rol (y preview_red) en los links de admin
+          const previewRed = params.get('preview_red')
           const href = previewActivo && item.href.startsWith('/admin')
-            ? `${item.href}${item.href.includes('?') ? '&' : '?'}preview_rol=${previewActivo}`
+            ? `${item.href}${item.href.includes('?') ? '&' : '?'}preview_rol=${previewActivo}${previewRed ? `&preview_red=${previewRed}` : ''}`
             : item.href
           return (
             <a

@@ -63,11 +63,29 @@ export default function AdminDashboard({ user, devocionalActivo, reportesSemana,
       actions={rolBadge}
     >
       {previewRol && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex items-center justify-between gap-3">
-          <p className="text-sm text-amber-800 font-medium">
-            Vista previa como: <span className="font-bold">{displayRol(previewRol)}</span>
-            <span className="font-normal text-amber-600 ml-2">— Esto es lo que ve este rol</span>
-          </p>
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
+            <p className="text-sm text-amber-800 font-medium">
+              Vista previa como: <span className="font-bold">{displayRol(previewRol)}</span>
+              <span className="font-normal text-amber-600 ml-2">— Esto es lo que ve este rol</span>
+            </p>
+            {previewRol === 'pastor_red' && (
+              <label className="flex items-center gap-1.5 text-xs text-amber-800 font-medium">
+                Simulando la
+                <select
+                  value={redAsignada ?? '1'}
+                  onChange={e => {
+                    window.location.href = `/admin?vista=${vista}&preview_rol=pastor_red&preview_red=${e.target.value}`
+                  }}
+                  className="border border-amber-300 bg-white rounded-lg px-2 py-1 text-xs font-semibold text-amber-900"
+                >
+                  {['1', '2', '3', '4', '5', '6'].map(r => (
+                    <option key={r} value={r}>Red {r}</option>
+                  ))}
+                </select>
+              </label>
+            )}
+          </div>
           <a href="/admin" className="text-xs text-amber-700 underline hover:text-amber-900">Salir</a>
         </div>
       )}

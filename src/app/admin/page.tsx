@@ -6,7 +6,7 @@ import { esAdmin } from '@/lib/roles'
 
 const ROLES_PREVIEW_VALIDOS = ['miembro', 'pastor_red', 'pastor_supervisor', 'pastor_general', 'plan_de_vida']
 
-export default async function AdminPage({ searchParams }: { searchParams: { vista?: string; preview_rol?: string } }) {
+export default async function AdminPage({ searchParams }: { searchParams: { vista?: string; preview_rol?: string; preview_red?: string } }) {
   const vistaParam = searchParams?.vista
   const vista: 'resumen' | 'nuevo' | 'editar' | 'reportes' | 'usuarios' =
     vistaParam === 'nuevo' || vistaParam === 'editar' || vistaParam === 'reportes' || vistaParam === 'usuarios' ? vistaParam : 'resumen'
@@ -35,7 +35,13 @@ export default async function AdminPage({ searchParams }: { searchParams: { vist
     .select('red_asignada')
     .eq('id', user.id)
     .maybeSingle()
-  const redAsignada = miPerfil?.red_asignada ?? null
+  let redAsignada = miPerfil?.red_asignada ?? null
+
+  // En vista previa como pastor_red, se simula una red concreta (Red 1 por defecto)
+  if (previewRol === 'pastor_red') {
+    const previewRed = searchParams?.preview_red
+    redAsignada = previewRed && /^[1-6]$/.test(previewRed) ? previewRed : '1'
+  }
 
   // Puede haber un devocional activo por tipo; el familiar es el principal del panel
   const { data: devocionalesActivos } = await supabase
