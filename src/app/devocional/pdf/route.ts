@@ -354,9 +354,8 @@ export async function GET(request: NextRequest) {
 
     ${contenidoParrafos.length > 0 ? `
     <div class="contenido-wrap clearfix">
-      ${contenidoParrafos.slice(0, Math.ceil(contenidoParrafos.length / 2)).map(p => `<p>${escHtml(p)}</p>`).join('')}
       ${d.imagen_url ? `<img class="contenido-img" src="${d.imagen_url}" alt="Ilustración" />` : ''}
-      ${contenidoParrafos.slice(Math.ceil(contenidoParrafos.length / 2)).map(p => `<p>${escHtml(p)}</p>`).join('')}
+      ${contenidoParrafos.map(p => `<p>${escHtml(p)}</p>`).join('')}
     </div>
     ` : ''}
 
